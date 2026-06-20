@@ -135,3 +135,44 @@ Second verification after the completion-audit fixes:
 - `npm run gateway:smoke` passed.
 - `npm run gui-tool:smoke` passed.
 - `npm run model-smoke` passed.
+
+## GUI Runtime V2 Acceptance Update
+
+Implemented in this pass:
+
+- Added GUI V2 event constants, identity helpers, and action state definitions.
+- Expanded GUI runtime types for stable action, observation, verification, approval, lease, side effect, and record contracts.
+- Added GUI policy classification, approval bridge, durable lease manager, and stuck detector.
+- Refactored `GuiRuntime` around `observe`, `requestAction`, `executeApprovedAction`, `act`, `verify`, `recoverGuiAction`, `readAction`, and `listRecentActions`.
+- Updated Dingxu and mock adapter verification semantics.
+- Split GUI observation/action records and added replay-friendly refs.
+- Added GUI timeline output to replay reports.
+- Added optional `GuiTool` core runtime bridge while keeping legacy GUI behavior.
+- Added `gui:runtime-smoke`, `gui:approval-smoke`, and `gui:recovery-smoke`.
+
+Initial verification:
+
+- `npm run typecheck` passed.
+- `npm run kernel:smoke` passed.
+- `npm run gui-tool:smoke` passed.
+- `npm run gui:runtime-smoke` passed.
+- `npm run gui:approval-smoke` passed.
+- `npm run gui:recovery-smoke` passed.
+
+Final GUI Runtime V2 verification:
+
+- `npm run typecheck` passed.
+- `npm run check` passed.
+- `npm run kernel:smoke` passed.
+- `npm run durable:smoke` passed.
+- `npm run durable:hardening-smoke` passed.
+- `npm run loop:core-smoke` passed.
+- `npm run loop:projection-smoke` passed.
+- `npm run loop:recovery-smoke` passed.
+- `npm run loop-runtime:smoke` passed.
+- `npm run gui-tool:smoke` passed.
+- `npm run gui:runtime-smoke` passed.
+- `npm run gui:approval-smoke` passed.
+- `npm run gui:recovery-smoke` passed.
+- `npm run gateway:smoke` passed.
+- `npm run model-smoke` passed.

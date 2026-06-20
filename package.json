@@ -67,7 +67,10 @@
     "stability:10h": "npm run build -- --pretty false && npm run web:build && node scripts/stability-runner.mjs --label 10h --duration-ms 36000000 --monitor-interval-ms 60000 --heartbeat-interval-ms 10000 --keep-workspace",
     "loop:core-smoke": "npm run build -- --pretty false && node scripts/core-loop-smoke.mjs",
     "loop:projection-smoke": "npm run build -- --pretty false && node scripts/loop-projection-smoke.mjs",
-    "loop:recovery-smoke": "npm run build -- --pretty false && node scripts/loop-recovery-smoke.mjs"
+    "loop:recovery-smoke": "npm run build -- --pretty false && node scripts/loop-recovery-smoke.mjs",
+    "gui:runtime-smoke": "npm run build -- --pretty false && node scripts/gui-runtime-smoke.mjs",
+    "gui:approval-smoke": "npm run build -- --pretty false && node scripts/gui-approval-smoke.mjs",
+    "gui:recovery-smoke": "npm run build -- --pretty false && node scripts/gui-recovery-smoke.mjs"
   },
   "engines": {
     "node": ">=18.0.0"

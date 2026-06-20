@@ -3,6 +3,7 @@ import { createTextResult } from '../../Tool.js'
 import { emitAgentEvent, eventBase } from '../../services/events/index.js'
 import { LocalGoalStore } from '../../services/goalStore/index.js'
 import { runGuiAction, type GuiActionBackend, type GuiActionRequest } from '../../services/gui/index.js'
+import { GuiRuntime, type GuiRuntimeAction } from '../../core/gui/index.js'
 
 export const GuiTool: ToolDefinition = {
   name: 'gui_action',
@@ -145,6 +146,19 @@ export const GuiTool: ToolDefinition = {
           { type: 'string' },
         ],
       },
+      approvalPolicy: {
+        type: 'string',
+        enum: ['never', 'ask', 'trusted'],
+      },
+      riskHint: {
+        type: 'string',
+      },
+      expectedChange: {
+        type: 'string',
+      },
+      idempotencyKey: {
+        type: 'string',
+      },
     },
     required: ['action'],
     additionalProperties: false,
@@ -168,6 +182,43 @@ export const GuiTool: ToolDefinition = {
       action: request.action,
       target: request.target,
     })
+
+    const coreRuntime = context.metadata?.coreGuiRuntime as GuiRuntime | undefined
+    const useCoreRuntime = Boolean(coreRuntime || context.metadata?.enableCoreGuiRuntime)
+    if (useCoreRuntime) {
+      const runtime = coreRuntime ?? new GuiRuntime({ workspaceRoot: context.cwd, workspaceId: typeof context.metadata?.workspaceId === 'string' ? context.metadata.workspaceId : 'default' })
+      const record = await runtime.act(request as GuiRuntimeAction, {
+        runId: typeof context.metadata?.runId === 'string' ? context.metadata.runId : undefined,
+        loopId: typeof context.metadata?.loopId === 'string' ? context.metadata.loopId : undefined,
+        goalId: typeof context.metadata?.goalId === 'string' ? context.metadata.goalId : undefined,
+        taskId: typeof context.metadata?.taskId === 'string' ? context.metadata.taskId : undefined,
+        attemptId: typeof context.metadata?.attemptId === 'string' ? context.metadata.attemptId : undefined,
+        source: 'agent',
+      })
+      const ok = record.state === 'completed' || record.state === 'verified'
+      await emitAgentEvent(context, {
+        ...eventBase(context, ok ? 'gui_action_completed' : 'gui_action_failed'),
+        type: ok ? 'gui_action_completed' : 'gui_action_failed',
+        toolUseId: toolUse.id,
+        ok,
+        method: record.result?.method,
+        fallbackUsed: Boolean(record.result?.fallbackUsed),
+        message: record.verification?.message ?? record.result?.message ?? record.state,
+        screenshotPath: record.verification?.screenshotRef ?? record.result?.screenshotRef ?? record.result?.screenshotPath,
+        failureClass: record.result?.failureClass ?? record.verification?.reasonCode,
+        audit: record.result?.audit,
+      } as any)
+      return createTextResult(toolUse.id, JSON.stringify({
+        ok,
+        guiActionId: record.identity.guiActionId,
+        state: record.state,
+        risk: record.sideEffect.effectType,
+        verification: record.verification,
+        eventIds: record.eventIds,
+        checkpointId: record.checkpointId,
+        result: record.result,
+      }, null, 2), ok)
+    }
 
     const backend = context.metadata?.guiBackend as GuiActionBackend | undefined
     const result = await runGuiAction(request, backend)
@@ -263,6 +314,10 @@ function normalizeGuiActionRequest(input: Record<string, unknown>): GuiActionReq
     forceUnicode: typeof input.forceUnicode === 'boolean' ? input.forceUnicode : undefined,
     timeoutMs: typeof input.timeoutMs === 'number' ? input.timeoutMs : undefined,
     verify: typeof input.verify === 'boolean' || typeof input.verify === 'string' ? input.verify : undefined,
+    approvalPolicy: input.approvalPolicy === 'never' || input.approvalPolicy === 'ask' || input.approvalPolicy === 'trusted' ? input.approvalPolicy : undefined,
+    riskHint: typeof input.riskHint === 'string' ? input.riskHint : undefined,
+    expectedChange: typeof input.expectedChange === 'string' ? input.expectedChange : undefined,
+    idempotencyKey: typeof input.idempotencyKey === 'string' ? input.idempotencyKey : undefined,
   }
 }
 

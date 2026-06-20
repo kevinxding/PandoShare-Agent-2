@@ -1,4 +1,4 @@
-﻿export type SideEffectType =
+export type SideEffectType =
   | 'readonly_tool'
   | 'file_read'
   | 'file_write'
@@ -6,6 +6,7 @@
   | 'shell_write'
   | 'gui_read'
   | 'gui_write'
+  | 'gui_dangerous_write'
   | 'gateway_inbound'
   | 'gateway_outbound'
   | 'model_request'

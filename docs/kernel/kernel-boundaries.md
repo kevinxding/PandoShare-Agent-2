@@ -99,3 +99,13 @@ New core code should not import Web, CLI, or server modules.
 - Legacy `LocalLoopStore` is a migration object, not core truth.
 - `runNext` may execute at most one task attempt.
 - Unsafe external effects must not be automatically replayed by recovery.
+
+## GUI Runtime V2 Boundaries
+
+- GUI Runtime must not call models directly.
+- GUI Runtime must not call Loop or Gateway directly.
+- Raw Dingxu tools can only be called by adapters, never exposed as model-facing tools.
+- GUI write actions require approval or explicit trusted policy.
+- GUI recovery must not automatically replay write or dangerous actions.
+- GUI action truth comes from DurableRuntime events and checkpoints, not `GuiObservationStore`.
+- `GuiObservationStore` is an indexed action/observation record log for replay and diagnostics.

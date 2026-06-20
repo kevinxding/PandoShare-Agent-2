@@ -49,6 +49,11 @@ export type GuiActionRequest = {
   forceUnicode?: boolean
   timeoutMs?: number
   verify?: boolean | string
+  approvalPolicy?: 'never' | 'ask' | 'trusted'
+  riskHint?: string
+  expectedChange?: string
+  idempotencyKey?: string
+  metadata?: Record<string, unknown>
 }
 
 export type GuiActionResult = {

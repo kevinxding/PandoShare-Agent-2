@@ -109,3 +109,23 @@ Loop Runtime V2 is now the core control-plane direction. The next migration roun
 5. Legacy service loopRuntime consolidation: keep `src/services/loopRuntime` working while bridging legacy events, then gradually move durable control state into `src/core/loop`.
 
 The legacy loop runtime remains the mature execution loop for workspace isolation, GUI tool loop smoke, failure policies, manual intervention, token policy, and CLI export. It must not be deleted until those features have durable V2 equivalents.
+
+## GUI Runtime V2 Update
+
+Implemented in this pass:
+
+- Core GUI event contract and action identity/state types.
+- Stable `GuiRuntimeAction` / observation / verification / action record types.
+- GUI risk policy, approval bridge, write lease, stuck detection, and recovery decisions.
+- Durable GUI action checkpoints with `gui_write` and `gui_dangerous_write` side effects.
+- Dingxu adapter verification semantics: real backend without verification is inconclusive, mock source is explicit.
+- GUI observation/action store split with locked append and corruption warnings.
+- ReplayReport GUI Timeline.
+- Optional GuiTool path through core `GuiRuntime` while preserving legacy `gui-tool:smoke`.
+
+Next migration round:
+
+1. Gateway Daemon V2 should consume GUI approval records.
+2. Model Router V2 should support GUI and vision routing.
+3. Event Replay V2 should enrich screenshot references and diff refs.
+4. Web UI Mission Control should display GUI timelines and pending approvals.

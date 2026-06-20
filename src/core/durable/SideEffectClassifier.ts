@@ -1,4 +1,4 @@
-﻿import type { ClassifiedSideEffect, SideEffectHint, SideEffectType } from './SideEffectTypes.js'
+import type { ClassifiedSideEffect, SideEffectHint, SideEffectType } from './SideEffectTypes.js'
 
 const SHELL_WRITE_PATTERN = /\b(rm|mv|cp|chmod|chown|sudo|npm\s+publish|pnpm\s+publish|yarn\s+npm\s+publish)\b|git\s+(push|reset|checkout\s+--|clean)|curl\b.*\|/i
 const GUI_WRITE_PATTERN = /click|type|submit|delete|publish|payment|drag|press|key|write|send/i
@@ -29,7 +29,10 @@ export function isAutoRecoverableEffect(effectType: SideEffectType): boolean {
 function inferEffectType(hint: SideEffectHint): SideEffectType {
   if (hint.source === 'model') return 'model_request'
   if (hint.source === 'gateway') return hint.action === 'outbound' || hint.action === 'send' ? 'gateway_outbound' : 'gateway_inbound'
-  if (hint.source === 'gui') return hint.action && GUI_WRITE_PATTERN.test(hint.action) ? 'gui_write' : 'gui_read'
+  if (hint.source === 'gui') {
+    if (hint.effectType) return hint.effectType
+    return hint.action && /submit|delete|publish|payment|confirm|install|system_setting|close_without_save/i.test(hint.action) ? 'gui_dangerous_write' : hint.action && GUI_WRITE_PATTERN.test(hint.action) ? 'gui_write' : 'gui_read'
+  }
   if (hint.source === 'mcp') return isWriteAction(hint.action ?? hint.toolName) ? 'mcp_write' : 'mcp_read'
   if (hint.source === 'file') return isWriteAction(hint.action) ? 'file_write' : 'file_read'
   if (hint.source === 'shell') return hint.command && SHELL_WRITE_PATTERN.test(hint.command) ? 'shell_write' : 'shell_readonly'

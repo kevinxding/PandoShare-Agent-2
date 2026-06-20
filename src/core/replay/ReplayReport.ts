@@ -37,6 +37,7 @@ export class ReplayReport {
         ...(inferredLoopState.warnings.length ? ['', ...inferredLoopState.warnings.map(warning => `- warning: ${warning}`)] : []),
         '',
       ] : []),
+      ...guiTimelineSection(input.timeline),
       ...(input.recoveryDecision ? [
         '## Recovery',
         '',
@@ -69,4 +70,39 @@ export class ReplayReport {
     }
     return `${lines.join('\n')}\n`
   }
+}
+
+function guiTimelineSection(timeline: readonly ReplayTimelineItem[]): string[] {
+  const guiItems = timeline.filter(item => item.category === 'gui')
+  if (!guiItems.length) return []
+  const lines = ['## GUI Timeline', '']
+  for (const item of guiItems) {
+    const payload = recordPayload(item.payload)
+    const action = recordPayload(payload.action)
+    const risk = recordPayload(payload.risk)
+    const approval = recordPayload(payload.approval)
+    const verification = recordPayload(payload.verification)
+    lines.push(`- ${item.seq}. ${item.eventType}: ${stringValue(payload, 'guiActionId') ?? 'unknown_gui_action'}`)
+    if (stringValue(action, 'action') || stringValue(payload, 'action')) lines.push(`  action: ${stringValue(action, 'action') ?? stringValue(payload, 'action')}`)
+    if (stringValue(payload, 'state')) lines.push(`  state: ${stringValue(payload, 'state')}`)
+    if (stringValue(risk, 'level')) lines.push(`  risk: ${stringValue(risk, 'level')}`)
+    if (stringValue(approval, 'status')) lines.push(`  approval: ${stringValue(approval, 'status')}`)
+    if (stringValue(payload, 'observationId')) lines.push(`  observation: ${stringValue(payload, 'observationId')}`)
+    if (stringValue(payload, 'beforeObservationId') || stringValue(verification, 'beforeObservationId')) lines.push(`  before: ${stringValue(payload, 'beforeObservationId') ?? stringValue(verification, 'beforeObservationId')}`)
+    if (stringValue(payload, 'afterObservationId') || stringValue(verification, 'afterObservationId')) lines.push(`  after: ${stringValue(payload, 'afterObservationId') ?? stringValue(verification, 'afterObservationId')}`)
+    if (stringValue(payload, 'screenshotRef') || stringValue(verification, 'screenshotRef')) lines.push(`  screenshotRef: ${stringValue(payload, 'screenshotRef') ?? stringValue(verification, 'screenshotRef')}`)
+    if (stringValue(verification, 'status')) lines.push(`  verification: ${stringValue(verification, 'status')}`)
+    if (stringValue(payload, 'checkpointId')) lines.push(`  checkpoint: ${stringValue(payload, 'checkpointId')}`)
+  }
+  lines.push('')
+  return lines
+}
+
+function recordPayload(value: unknown): Record<string, unknown> {
+  return value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {}
+}
+
+function stringValue(record: Record<string, unknown>, key: string): string | undefined {
+  const value = record[key]
+  return typeof value === 'string' && value.trim() ? value : undefined
 }
