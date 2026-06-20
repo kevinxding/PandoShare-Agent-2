@@ -1,0 +1,102 @@
+{
+  "model": {
+    "provider": "minimax-cn",
+    "name": "MiniMax-M3"
+  },
+  "permissions": {
+    "approvalPolicy": "on-request",
+    "sandboxMode": "workspace-write",
+    "approvalsReviewer": "user",
+    "trustedTools": [
+      "file_read",
+      "glob",
+      "grep"
+    ]
+  },
+  "providers": {
+    "openai": {
+      "apiKeyEnv": "OPENAI_API_KEY",
+      "model": "gpt-5.5"
+    },
+    "deepseek": {
+      "apiKeyEnv": "DEEPSEEK_API_KEY",
+      "model": "deepseek-v4-flash"
+    },
+    "minimax-cn": {
+      "apiKeyEnv": [
+        "MINIMAX_CN_API_KEY",
+        "MINIMAX_API_KEY"
+      ],
+      "model": "MiniMax-M3"
+    },
+    "custom": {
+      "baseURL": "https://example.invalid/v1",
+      "apiKeyEnv": "CUSTOM_LLM_API_KEY",
+      "model": "custom-model",
+      "protocol": "openai-chat-completions"
+    }
+  },
+  "gateway": {
+    "enabled": true,
+    "heartbeatIntervalMs": 60000,
+    "progressHeartbeatIntervalMs": 30000,
+    "allowUsers": [
+      "local-user"
+    ],
+    "pairingSecretEnv": "PANDO_GATEWAY_PAIRING_SECRET",
+    "channels": {
+      "mock": {
+        "kind": "mock",
+        "enabled": true
+      },
+      "telegram": {
+        "kind": "telegram",
+        "enabled": false,
+        "tokenEnv": "PANDO_TELEGRAM_BOT_TOKEN",
+        "chatIdEnv": "PANDO_TELEGRAM_CHAT_ID",
+        "ingressSecretEnv": "PANDO_GATEWAY_INGRESS_SECRET",
+        "allowedUsers": []
+      },
+      "feishu": {
+        "kind": "feishu",
+        "enabled": false,
+        "webhookEnv": "PANDO_FEISHU_WEBHOOK_URL",
+        "ingressSecretEnv": "PANDO_GATEWAY_INGRESS_SECRET",
+        "allowedUsers": []
+      },
+      "lark": {
+        "kind": "lark",
+        "enabled": false,
+        "webhookEnv": "PANDO_LARK_WEBHOOK_URL",
+        "ingressSecretEnv": "PANDO_GATEWAY_INGRESS_SECRET",
+        "allowedUsers": []
+      },
+      "wecom": {
+        "kind": "wecom",
+        "enabled": false,
+        "webhookEnv": "PANDO_WECOM_WEBHOOK_URL",
+        "ingressSecretEnv": "PANDO_GATEWAY_INGRESS_SECRET",
+        "allowedUsers": []
+      }
+    }
+  },
+  "mcpServers": {
+    "windows_mcp": {
+      "command": "python",
+      "args": [
+        "-m",
+        "windows_mcp",
+        "serve"
+      ],
+      "startupTimeoutSec": 20,
+      "messageFormat": "json-lines"
+    },
+    "dingxu_gui": {
+      "command": "python",
+      "args": [
+        "D:/Users/Lenovo/Desktop/dingxu_agent/run_server.py"
+      ],
+      "startupTimeoutSec": 60
+    }
+  }
+}
