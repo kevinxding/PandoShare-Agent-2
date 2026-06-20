@@ -7,8 +7,21 @@ export type LoopCommandResult = {
   result: unknown
 }
 
+type LoopCommandRuntime = Pick<
+  LoopRuntime,
+  | 'createLoop'
+  | 'runNext'
+  | 'resumeLoop'
+  | 'status'
+  | 'recoverLoop'
+  | 'pauseLoop'
+  | 'stopLoop'
+  | 'approveHumanGate'
+  | 'rejectHumanGate'
+>
+
 export class LoopCommandHandler {
-  constructor(private readonly runtime: Pick<LoopRuntime, 'createLoop' | 'runNext' | 'resumeLoop' | 'status' | 'recoverLoop'>) {}
+  constructor(private readonly runtime: LoopCommandRuntime) {}
 
   async handle(command: CommandEnvelope): Promise<LoopCommandResult> {
     const payload = recordPayload(command.payload)
@@ -29,13 +42,16 @@ export class LoopCommandHandler {
         return { ok: true, commandType: command.commandType, result: await this.runtime.runNext(requireLoopId(loopId)) }
       case 'loop.resume':
         return { ok: true, commandType: command.commandType, result: await this.runtime.resumeLoop(requireLoopId(loopId)) }
+      case 'loop.pause':
+        return { ok: true, commandType: command.commandType, result: await this.runtime.pauseLoop(requireLoopId(loopId), stringPayload(payload, 'reason')) }
+      case 'loop.stop':
+        return { ok: true, commandType: command.commandType, result: await this.runtime.stopLoop(requireLoopId(loopId), stringPayload(payload, 'reason')) }
       case 'loop.status':
         return { ok: true, commandType: command.commandType, result: await this.runtime.status(requireLoopId(loopId)) }
-      case 'loop.pause':
-      case 'loop.stop':
       case 'loop.approve':
+        return { ok: true, commandType: command.commandType, result: await this.runtime.approveHumanGate({ loopId: requireLoopId(loopId), gateId: stringPayload(payload, 'gateId'), resolvedBy: command.source, reason: stringPayload(payload, 'reason') }) }
       case 'loop.reject':
-        return { ok: false, commandType: command.commandType, result: { reason: `${command.commandType} is event-contract-only in this core layer; UI/gateway adapters should resolve it through HumanGate events.` } }
+        return { ok: true, commandType: command.commandType, result: await this.runtime.rejectHumanGate({ loopId: requireLoopId(loopId), gateId: stringPayload(payload, 'gateId'), resolvedBy: command.source, reason: stringPayload(payload, 'reason') }) }
       default:
         throw new Error(`Unsupported loop command: ${command.commandType}`)
     }

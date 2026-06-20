@@ -12,6 +12,7 @@ await mkdir(smokeRoot, { recursive: true })
 
 try {
   await smokeCoreLoopV2(core, smokeRoot)
+  await smokeCommandHandler(core, resolve(smokeRoot, 'commands'))
   await smokeRunGoalCompatibility(core, resolve(smokeRoot, 'compat'))
 } finally {
   assertInside(root, smokeRoot)
@@ -79,6 +80,68 @@ async function smokeCoreLoopV2(core, workspaceRoot) {
   assert(checkpoints.length === 1, `expected one loop checkpoint, got ${checkpoints.length}`)
   const projected = await runtime.status('loop_core_smoke')
   assert(projected.status === 'completed', `expected projected completed, got ${projected.status}`)
+  const replayMarkdown = await new core.ReplayReader(durable).buildLoopReplayMarkdown('loop_core_smoke')
+  assert(replayMarkdown.includes('## Loop Projection'), 'loop replay markdown should include projection summary')
+}
+
+
+async function smokeCommandHandler(core, workspaceRoot) {
+  const durable = new core.DurableRuntime({ workspaceRoot, workspaceId: 'default' })
+  const agent = {
+    async submitRun() {
+      throw new Error('approval command smoke must not execute AgentKernel')
+    },
+    async recordCoreEvent(input) {
+      return durable.appendEvent(input)
+    },
+  }
+  const runtime = new core.LoopRuntime({ workspaceRoot, workspaceId: 'default', agentKernel: agent })
+  const handler = new core.LoopCommandHandler(runtime)
+  await handler.handle(core.createCommandEnvelope({
+    commandType: 'loop.create',
+    workspaceId: 'default',
+    loopId: 'loop_command_smoke',
+    goalId: 'goal_command_smoke',
+    source: 'test',
+    payload: {
+      objective: 'Wait for approval.',
+    },
+  }))
+  const created = await runtime.createLoop({
+    loopId: 'loop_approval_smoke',
+    goalId: 'goal_approval_smoke',
+    objective: 'Approval task.',
+    task: { requiresApproval: true },
+    source: 'test',
+  })
+  const wait = await runtime.runNext(created.identity.loopId)
+  assert(wait.decision.type === 'wait_human', `expected wait_human, got ${wait.decision.type}`)
+  await handler.handle(core.createCommandEnvelope({
+    commandType: 'loop.approve',
+    workspaceId: 'default',
+    loopId: created.identity.loopId,
+    goalId: created.identity.goalId,
+    source: 'test',
+    payload: { gateId: wait.gateId, reason: 'approved in smoke' },
+  }))
+  let events = await durable.readEvents({ loopId: created.identity.loopId })
+  assert(events.some(event => event.eventType === 'loop_human_gate_resolved'), 'loop.approve should resolve human gate')
+  await handler.handle(core.createCommandEnvelope({
+    commandType: 'loop.pause',
+    workspaceId: 'default',
+    loopId: 'loop_command_smoke',
+    source: 'test',
+    payload: { reason: 'pause smoke' },
+  }))
+  await handler.handle(core.createCommandEnvelope({
+    commandType: 'loop.stop',
+    workspaceId: 'default',
+    loopId: 'loop_command_smoke',
+    source: 'test',
+    payload: { reason: 'stop smoke' },
+  }))
+  events = await durable.readEvents({ loopId: 'loop_command_smoke' })
+  assert(events.filter(event => event.eventType === 'loop_blocked').length >= 1, 'pause/stop should write loop_blocked events')
 }
 
 async function smokeRunGoalCompatibility(core, workspaceRoot) {

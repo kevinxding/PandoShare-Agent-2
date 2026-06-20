@@ -234,6 +234,59 @@ export class LoopRuntime {
     return this.recovery.recoverLoop(loopId)
   }
 
+
+  async pauseLoop(loopId: string, reason = 'loop paused by command'): Promise<LoopState> {
+    const state = await this.status(loopId)
+    await this.durable.appendEvent({
+      eventType: LOOP_EVENT_TYPES.blocked,
+      workspaceId: state.workspaceId,
+      loopId: state.loopId,
+      goalId: state.goalId,
+      runId: state.lastRunId,
+      payload: { reason, command: 'loop.pause' },
+    })
+    return this.status(loopId)
+  }
+
+  async stopLoop(loopId: string, reason = 'loop stopped by command'): Promise<LoopState> {
+    const state = await this.status(loopId)
+    await this.durable.appendEvent({
+      eventType: LOOP_EVENT_TYPES.blocked,
+      workspaceId: state.workspaceId,
+      loopId: state.loopId,
+      goalId: state.goalId,
+      runId: state.lastRunId,
+      payload: { reason, command: 'loop.stop', activeRunId: state.lastRunId },
+    })
+    return this.status(loopId)
+  }
+
+  async approveHumanGate(input: { loopId: string; gateId?: string; resolvedBy?: string; reason?: string }): Promise<LoopState> {
+    return this.resolveHumanGate({ ...input, approved: true })
+  }
+
+  async rejectHumanGate(input: { loopId: string; gateId?: string; resolvedBy?: string; reason?: string }): Promise<LoopState> {
+    return this.resolveHumanGate({ ...input, approved: false })
+  }
+
+  private async resolveHumanGate(input: { loopId: string; gateId?: string; approved: boolean; resolvedBy?: string; reason?: string }): Promise<LoopState> {
+    const state = await this.status(input.loopId)
+    const gateId = input.gateId ?? state.pendingHumanGateId
+    if (!gateId) throw new Error(`Loop has no pending human gate: ${input.loopId}`)
+    const gate = state.humanGates.find(item => item.gateId === gateId)
+    await this.humanGate.resolveRequest({
+      workspaceId: state.workspaceId,
+      loopId: state.loopId,
+      goalId: state.goalId,
+      taskId: gate?.taskId,
+      gateId,
+      approved: input.approved,
+      resolvedBy: input.resolvedBy,
+      reason: input.reason,
+    })
+    return this.status(input.loopId)
+  }
+
   async runGoal(input: {
     objective: string
     successCriteria?: readonly string[]

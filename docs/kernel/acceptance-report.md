@@ -112,3 +112,26 @@ Final verification for this Loop Runtime V2 pass:
 - `npm run gateway:smoke` passed.
 - `npm run gui-tool:smoke` passed.
 - `npm run model-smoke` passed.
+
+Completion-audit follow-up:
+
+- `LoopCommandHandler` now handles `loop.pause`, `loop.stop`, `loop.approve`, and `loop.reject` through durable loop events instead of returning placeholder failures.
+- `LoopLegacyAdapter` now bridges legacy export-shaped data and returns a migration projection summary.
+- `ReplayReader` now exposes `readWithLoopProjection` and `buildLoopReplayMarkdown` to reduce caller risk of omitting loop projection summaries.
+- `core-loop-smoke` now covers command handling and replay markdown projection.
+- `loop-recovery-smoke` now covers legacy export bridging.
+
+Second verification after the completion-audit fixes:
+
+- `npm run typecheck` passed.
+- `npm run check` passed.
+- `npm run kernel:smoke` passed.
+- `npm run durable:smoke` passed.
+- `npm run durable:hardening-smoke` passed.
+- `npm run loop:core-smoke` passed.
+- `npm run loop:projection-smoke` passed.
+- `npm run loop:recovery-smoke` passed.
+- `npm run loop-runtime:smoke` passed.
+- `npm run gateway:smoke` passed.
+- `npm run gui-tool:smoke` passed.
+- `npm run model-smoke` passed.

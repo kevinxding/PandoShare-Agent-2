@@ -56,7 +56,13 @@ async function smokeCorrupted(core, workspaceRoot) {
 
 async function smokeLegacyOnly(core, workspaceRoot) {
   const durable = new core.DurableRuntime({ workspaceRoot, workspaceId: 'default' })
-  await new core.LoopLegacyAdapter(durable).bridgeLegacyEvent({ workspaceId: 'default', loopId: 'loop_recovery_legacy', status: 'running', eventType: 'loop_run_started', data: { runId: 'legacy_run' } })
+  const projection = await new core.LoopLegacyAdapter(durable).bridgeLegacyExport('default', {
+    metadata: { loopId: 'loop_recovery_legacy', status: 'running' },
+    runs: [{ runId: 'legacy_run', status: 'running' }],
+    iterations: [{ index: 1 }],
+    events: [{ type: 'loop_run_started', data: { runId: 'legacy_run' } }],
+  })
+  assert(projection.iterationCount === 1, 'legacy bridge should summarize iteration count')
   const decision = await new core.LoopRecovery(durable).decideLoopRecovery('loop_recovery_legacy')
   assert(decision.decision === 'requires_legacy_bridge', `expected requires_legacy_bridge, got ${decision.decision}`)
 }

@@ -19,6 +19,13 @@ export type LegacyLoopProjection = {
   lastFailurePolicyEvent?: string
 }
 
+export type LegacyLoopExportLike = {
+  metadata: { loopId: string; goalId?: string; status?: string }
+  runs?: readonly { runId?: string; status?: string }[]
+  iterations?: readonly unknown[]
+  events?: readonly { type?: string; createdAtMs?: number; data?: unknown; status?: string }[]
+}
+
 export class LoopLegacyAdapter {
   constructor(private readonly durable: DurableRuntime) {}
 
@@ -36,6 +43,36 @@ export class LoopLegacyAdapter {
         data: input.data,
       },
     })
+  }
+
+  async bridgeLegacyExport(workspaceId: string, data: LegacyLoopExportLike): Promise<LegacyLoopProjection> {
+    const projection = this.buildLegacyProjection({
+      loopId: data.metadata.loopId,
+      status: data.metadata.status,
+      runs: data.runs,
+      iterations: data.iterations,
+      events: data.events,
+    })
+    await this.bridgeLegacyEvent({
+      workspaceId,
+      loopId: data.metadata.loopId,
+      goalId: data.metadata.goalId,
+      status: data.metadata.status,
+      eventType: 'legacy_metadata',
+      data: projection,
+    })
+    for (const event of data.events ?? []) {
+      await this.bridgeLegacyEvent({
+        workspaceId,
+        loopId: data.metadata.loopId,
+        goalId: data.metadata.goalId,
+        status: event.status ?? data.metadata.status,
+        eventType: event.type ?? 'legacy_event',
+        createdAtMs: event.createdAtMs,
+        data: event.data,
+      })
+    }
+    return projection
   }
 
   buildLegacyProjection(input: {
