@@ -1,8 +1,8 @@
-export type CheckpointStatus = 'safe_to_replay' | 'unsafe_to_replay' | 'partial_replay'
+﻿export type CheckpointStatus = 'safe_to_replay' | 'unsafe_to_replay' | 'partial_replay'
 
 export type PendingExternalEffect = {
   effectId: string
-  effectType: 'shell' | 'gui_action' | 'gateway_outbound' | 'file_write' | 'mcp_write' | 'other'
+  effectType: 'shell' | 'gui_action' | 'gateway_outbound' | 'file_write' | 'mcp_write' | 'other' | string
   summary: string
   confirmed: boolean
 }
@@ -37,6 +37,7 @@ export type CreateCheckpointInput = Omit<
   lastEventSeq?: number
   unsafeToReplayToolCallIds?: string[]
   pendingExternalEffects?: PendingExternalEffect[]
+  effectHints?: import('./SideEffectTypes.js').SideEffectHint[]
 }
 
 export function validateCheckpoint(checkpoint: KernelCheckpoint, latestEventSeq: number): void {

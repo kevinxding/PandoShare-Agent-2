@@ -1,9 +1,13 @@
-import { createProtocolId } from '../protocol/index.js'
-import { JsonlStore } from '../store/index.js'
+﻿import { createProtocolId } from '../protocol/index.js'
+import { JsonlStore, type JsonlReadResult, ProcessFileLock } from '../store/index.js'
 import type { RunSnapshot, WriteRunSnapshotInput } from './RunSnapshotTypes.js'
 
 export class RunSnapshotStore {
-  constructor(private readonly store: JsonlStore<RunSnapshot>) {}
+  private readonly lock: ProcessFileLock
+
+  constructor(private readonly store: JsonlStore<RunSnapshot>) {
+    this.lock = new ProcessFileLock(store.path)
+  }
 
   async writeSnapshot(input: WriteRunSnapshotInput): Promise<RunSnapshot> {
     assertJsonSerializable(input)
@@ -24,7 +28,7 @@ export class RunSnapshotStore {
       retryCount: input.retryCount ?? 0,
       createdAtMs: input.createdAtMs ?? Date.now(),
     }
-    await this.store.append(snapshot)
+    await this.store.appendLocked(snapshot, this.lock, { reason: 'run snapshot append' })
     return snapshot
   }
 
@@ -39,6 +43,10 @@ export class RunSnapshotStore {
       if (right.lastEventSeq !== left.lastEventSeq) return right.lastEventSeq - left.lastEventSeq
       return right.createdAtMs - left.createdAtMs
     })[0]
+  }
+
+  async readWithCorruption(): Promise<JsonlReadResult<RunSnapshot>> {
+    return this.store.readWithCorruption()
   }
 }
 

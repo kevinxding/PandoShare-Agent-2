@@ -1,11 +1,11 @@
-import {
+﻿import {
   createEventEnvelope,
   createProtocolId,
   validateEventEnvelope,
   type EventEnvelope,
   type EventEnvelopeInput,
 } from '../protocol/index.js'
-import { JsonlStore, RuntimePaths } from '../store/index.js'
+import { JsonlStore, ProcessFileLock, RuntimePaths, type JsonlReadResult } from '../store/index.js'
 import { redactDurablePayload } from './DurableRedaction.js'
 import { EventSeq } from './EventSeq.js'
 
@@ -19,10 +19,12 @@ export type EventStoreAppendOptions = {
 
 export class EventStore {
   private readonly store: JsonlStore<EventEnvelope>
+  private readonly appendLock: ProcessFileLock
   private readonly seq: EventSeq
 
   constructor(private readonly paths: RuntimePaths) {
     this.store = new JsonlStore<EventEnvelope>(paths.eventsPath())
+    this.appendLock = new ProcessFileLock(paths.eventsPath())
     this.seq = new EventSeq(paths)
   }
 
@@ -30,12 +32,14 @@ export class EventStore {
     if ('seq' in input && input.seq !== undefined && !options.importMode) {
       throw new Error('Durable EventStore rejects pre-sequenced events outside import mode')
     }
-    const event = options.importMode && 'seq' in input && input.seq !== undefined
-      ? this.importEvent(input as EventEnvelope)
-      : await this.createDurableEvent(input as DurableEventInput)
-    validateEventForStore(event)
-    await this.store.append(event)
-    return event
+    return this.appendLock.withLock({ reason: `event append ${this.paths.workspaceId}` }, async () => {
+      const event = options.importMode && 'seq' in input && input.seq !== undefined
+        ? this.importEvent(input as EventEnvelope)
+        : await this.createDurableEventInTransaction(input as DurableEventInput)
+      validateEventForStore(event)
+      await this.store.append(event)
+      return event
+    })
   }
 
   async appendMany(inputs: readonly (DurableEventInput | EventEnvelope)[], options: EventStoreAppendOptions = {}): Promise<EventEnvelope[]> {
@@ -52,6 +56,10 @@ export class EventStore {
       .filter(event => input.runId === undefined || event.runId === input.runId)
       .filter(event => input.loopId === undefined || event.loopId === input.loopId)
       .sort((left, right) => left.seq - right.seq)
+  }
+
+  async readWithCorruption(): Promise<JsonlReadResult<EventEnvelope>> {
+    return this.store.readWithCorruption()
   }
 
   readRunEvents(runId: string): Promise<EventEnvelope[]> {
@@ -71,8 +79,12 @@ export class EventStore {
     return (await this.store.readRecords()).some(event => event.seq === seq)
   }
 
-  private async createDurableEvent(input: DurableEventInput): Promise<EventEnvelope> {
-    const event = createEventEnvelope({
+  async repairSeqFromEvents(): Promise<void> {
+    await this.seq.repairSeqFromEvents(await this.latestSeq())
+  }
+
+  private async createDurableEventInTransaction(input: DurableEventInput): Promise<EventEnvelope> {
+    return createEventEnvelope({
       eventId: input.eventId ?? createProtocolId('evt'),
       eventType: input.eventType,
       workspaceId: input.workspaceId,
@@ -84,17 +96,16 @@ export class EventStore {
       toolCallId: input.toolCallId,
       parentEventId: input.parentEventId,
       createdAtMs: input.createdAtMs ?? Date.now(),
-      seq: await this.seq.next(),
+      seq: await this.seq.nextInTransaction(),
       payload: redactDurablePayload(input.payload),
     })
-    return event
   }
 
   private importEvent(event: EventEnvelope): EventEnvelope {
     validateEventEnvelope(event)
     return {
       ...event,
-      payload: redactDurablePayload(event.payload),
+      payload: markImportedPayload(redactDurablePayload(event.payload)),
     }
   }
 }
@@ -104,8 +115,22 @@ export function validateEventForStore(event: EventEnvelope): void {
   if (isRunEvent(event.eventType) && !event.runId) {
     throw new Error(`Run event ${event.eventType} requires runId`)
   }
+  JSON.stringify(event.payload)
 }
 
 function isRunEvent(eventType: string): boolean {
   return eventType.startsWith('run_') || eventType === 'kernel_persistence_failed'
+}
+
+function markImportedPayload(payload: unknown): unknown {
+  if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
+    return {
+      ...payload,
+      importMode: true,
+    }
+  }
+  return {
+    value: payload,
+    importMode: true,
+  }
 }

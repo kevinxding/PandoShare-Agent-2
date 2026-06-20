@@ -1,4 +1,4 @@
-# Kernel Boundaries
+﻿# Kernel Boundaries
 
 ## Allowed Direction
 
@@ -80,3 +80,11 @@ New core code should not import Web, CLI, or server modules.
 - RecoveryDecision only classifies recovery state; it must not execute recovery.
 - QueryEngine remains the legacy executor, but its events must enter the durable event store through the AgentKernel bridge.
 - Shell, GUI, gateway outbound, file write, and MCP write effects must not be replayed automatically.
+
+## Durable Hardening Rule
+
+- Durable JSONL writes for events, checkpoints, snapshots, heartbeats, and run ledger records must use locked append.
+- Durable event seq must be assigned inside the EventStore cross-process append transaction.
+- New core code should use DurableRuntime for run ledger reads/writes.
+- Seq repair is maintenance-only and must not run silently in business paths.
+- SideEffectClassifier decides recovery safety boundaries; it does not approve or execute actions.

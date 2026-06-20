@@ -1,4 +1,4 @@
-# Kernel Migration Plan
+﻿# Kernel Migration Plan
 
 ## Existing Module Mapping
 
@@ -51,7 +51,18 @@ Implemented in this pass:
 - ConsistencyAudit and corruption marker events.
 - Replay reads through DurableRuntime.
 
-## Phase 4: Durable Runtime V2
+## Phase 4: Durable Runtime V1.1
+
+Implemented in this pass:
+
+- Cross-process ProcessFileLock.
+- Locked durable JSONL append.
+- Event seq and append hardening.
+- RunLedgerStore ownership moved into DurableRuntime.
+- SideEffectClassifier and unsafe checkpoint downgrade.
+- Maintenance report and durable hardening smoke.
+
+## Phase 5: Durable Runtime V2
 
 Next work:
 
@@ -62,7 +73,7 @@ Next work:
 - Add durable artifact refs for large tool results.
 - Add operator review records for `requires_human` recovery decisions.
 
-## Phase 5: ThreadStore Core Primitives
+## Phase 6: ThreadStore Core Primitives
 
 Next work:
 
@@ -71,7 +82,7 @@ Next work:
 - Append canonical `EventEnvelope` records beside legacy thread `AgentEvent` records.
 - Add replay views for thread messages, checkpoints, compactions, and run ledger records.
 
-## Phase 6: Replay CLI
+## Phase 7: Replay CLI
 
 Next work:
 

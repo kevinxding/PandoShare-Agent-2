@@ -1,16 +1,42 @@
-import { createProtocolId } from '../protocol/index.js'
-import { JsonlStore } from '../store/index.js'
+﻿import { createProtocolId } from '../protocol/index.js'
+import { JsonlStore, type JsonlReadResult, ProcessFileLock } from '../store/index.js'
 import { redactDurablePayload } from './DurableRedaction.js'
+import { SideEffectClassifier } from './SideEffectClassifier.js'
 import {
   validateCheckpoint,
   type CreateCheckpointInput,
   type KernelCheckpoint,
+  type PendingExternalEffect,
 } from './CheckpointTypes.js'
 
 export class CheckpointStore {
-  constructor(private readonly store: JsonlStore<KernelCheckpoint>) {}
+  private readonly lock: ProcessFileLock
+  private readonly classifier = new SideEffectClassifier()
+
+  constructor(private readonly store: JsonlStore<KernelCheckpoint>) {
+    this.lock = new ProcessFileLock(store.path)
+  }
 
   async createCheckpoint(input: CreateCheckpointInput, latestEventSeq: number): Promise<KernelCheckpoint> {
+    const classified = this.classifier.classifyMany(input.effectHints)
+    const classifiedPending = classified
+      .filter(effect => effect.requiresHuman && !effect.confirmed)
+      .map(effect => ({
+        effectId: effect.effectId,
+        effectType: effect.effectType,
+        summary: effect.summary,
+        confirmed: effect.confirmed,
+      } satisfies PendingExternalEffect))
+    const pendingExternalEffects = [
+      ...(input.pendingExternalEffects ?? []),
+      ...classifiedPending,
+    ]
+    const requestedStatus = input.status ?? 'safe_to_replay'
+    const status = requestedStatus === 'unsafe_to_replay'
+      ? 'unsafe_to_replay'
+      : pendingExternalEffects.length && requestedStatus === 'safe_to_replay'
+        ? 'partial_replay'
+        : requestedStatus
     const checkpoint: KernelCheckpoint = {
       checkpointId: input.checkpointId ?? createProtocolId('checkpoint'),
       workspaceId: input.workspaceId,
@@ -19,18 +45,18 @@ export class CheckpointStore {
       goalId: input.goalId,
       loopId: input.loopId,
       commandId: input.commandId,
-      status: input.status ?? 'safe_to_replay',
+      status,
       reason: input.reason,
       lastEventSeq: input.lastEventSeq ?? latestEventSeq,
       createdAtMs: input.createdAtMs ?? Date.now(),
       summary: input.summary ?? 'checkpoint',
       snapshotRef: input.snapshotRef,
       unsafeToReplayToolCallIds: [...(input.unsafeToReplayToolCallIds ?? [])],
-      pendingExternalEffects: [...(input.pendingExternalEffects ?? [])],
+      pendingExternalEffects,
       payload: redactDurablePayload(input.payload),
     }
     validateCheckpoint(checkpoint, latestEventSeq)
-    await this.store.append(checkpoint)
+    await this.store.appendLocked(checkpoint, this.lock, { reason: 'checkpoint append' })
     return checkpoint
   }
 
@@ -47,6 +73,10 @@ export class CheckpointStore {
       .filter(record => input.runId === undefined || record.runId === input.runId)
       .filter(record => input.goalId === undefined || record.goalId === input.goalId)
       .filter(record => input.loopId === undefined || record.loopId === input.loopId)
+  }
+
+  async readWithCorruption(): Promise<JsonlReadResult<KernelCheckpoint>> {
+    return this.store.readWithCorruption()
   }
 
   async markUnsafeToReplay(checkpointId: string, reason: string, latestEventSeq: number): Promise<KernelCheckpoint> {

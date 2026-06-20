@@ -1,5 +1,5 @@
-import { createProtocolId } from '../protocol/index.js'
-import { JsonlStore } from '../store/index.js'
+﻿import { createProtocolId } from '../protocol/index.js'
+import { JsonlStore, type JsonlReadResult, ProcessFileLock } from '../store/index.js'
 import { redactDurablePayload } from './DurableRedaction.js'
 
 export type KernelHeartbeat = {
@@ -35,7 +35,11 @@ export type WriteHeartbeatInput = Omit<
 }
 
 export class HeartbeatManager {
-  constructor(private readonly store: JsonlStore<KernelHeartbeat>) {}
+  private readonly lock: ProcessFileLock
+
+  constructor(private readonly store: JsonlStore<KernelHeartbeat>) {
+    this.lock = new ProcessFileLock(store.path)
+  }
 
   async writeHeartbeat(input: WriteHeartbeatInput): Promise<KernelHeartbeat> {
     const workerId = input.workerId ?? input.runtimeId
@@ -60,7 +64,7 @@ export class HeartbeatManager {
       message: input.message,
       payload: redactDurablePayload(input.payload),
     }
-    await this.store.append(heartbeat)
+    await this.store.appendLocked(heartbeat, this.lock, { reason: 'heartbeat append' })
     return heartbeat
   }
 
@@ -79,6 +83,10 @@ export class HeartbeatManager {
       .filter(record => input.workerType === undefined || record.workerType === input.workerType)
       .filter(record => input.kernel === undefined || record.kernel === input.kernel)
       .filter(record => input.runId === undefined || record.runId === input.runId)
+  }
+
+  async readWithCorruption(): Promise<JsonlReadResult<KernelHeartbeat>> {
+    return this.store.readWithCorruption()
   }
 
   async isStale(workerId: string, nowMs: number, ttlMs: number): Promise<boolean> {

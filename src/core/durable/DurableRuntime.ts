@@ -1,5 +1,4 @@
-import type { RunLedgerEntry } from '../agent/index.js'
-import type { EventEnvelope } from '../protocol/index.js'
+﻿import type { EventEnvelope } from '../protocol/index.js'
 import { JsonlStore, RuntimePaths } from '../store/index.js'
 import { CheckpointManager } from './CheckpointManager.js'
 import type { CreateCheckpointInput, KernelCheckpoint } from './CheckpointTypes.js'
@@ -9,9 +8,19 @@ import { EventStore, type DurableEventInput } from './EventStore.js'
 import { HeartbeatManager, type KernelHeartbeat, type WriteHeartbeatInput } from './HeartbeatManager.js'
 import { RecoveryPlanner } from './RecoveryPlanner.js'
 import type { RecoveryDecision } from './RecoveryDecision.js'
+import { RunLedgerStore, type RunLedgerEntry } from './RunLedgerStore.js'
 import { RunSnapshotStore } from './RunSnapshotStore.js'
 import type { RunSnapshot, WriteRunSnapshotInput } from './RunSnapshotTypes.js'
 import { RuntimeStateStore } from './RuntimeStateStore.js'
+
+export type DurableMaintenanceReport = {
+  latestSeq: number
+  eventCount: number
+  corruptRecordCount: number
+  activeRuns: RunLedgerEntry[]
+  staleHeartbeats: KernelHeartbeat[]
+  recentCorruptionEvents: EventEnvelope[]
+}
 
 export class DurableRuntime {
   readonly paths: RuntimePaths
@@ -20,8 +29,8 @@ export class DurableRuntime {
   readonly checkpointManager: CheckpointManager
   readonly heartbeatManager: HeartbeatManager
   readonly runSnapshotStore: RunSnapshotStore
+  readonly runLedgerStore: RunLedgerStore
   readonly stateStore: RuntimeStateStore
-  private readonly runLedgerStore: JsonlStore<RunLedgerEntry>
   private readonly recoveryPlanner = new RecoveryPlanner()
   private readonly consistencyAudit = new ConsistencyAudit()
 
@@ -32,7 +41,7 @@ export class DurableRuntime {
     this.checkpointManager = new CheckpointManager(new JsonlStore(this.paths.checkpointsPath()))
     this.heartbeatManager = new HeartbeatManager(new JsonlStore(this.paths.heartbeatsPath()))
     this.runSnapshotStore = new RunSnapshotStore(new JsonlStore(this.paths.runSnapshotsPath()))
-    this.runLedgerStore = new JsonlStore<RunLedgerEntry>(this.paths.queuePath('agent-run-ledger'))
+    this.runLedgerStore = RunLedgerStore.fromRuntimePaths(this.paths)
     this.stateStore = new RuntimeStateStore(this.paths)
   }
 
@@ -64,6 +73,22 @@ export class DurableRuntime {
       throw new Error(`RunSnapshot references missing event seq ${input.lastEventSeq}`)
     }
     return this.runSnapshotStore.writeSnapshot(input)
+  }
+
+  appendRunLedger(entry: Parameters<RunLedgerStore['append']>[0]): Promise<RunLedgerEntry> {
+    return this.runLedgerStore.append(entry)
+  }
+
+  readRun(runId: string): Promise<RunLedgerEntry | undefined> {
+    return this.runLedgerStore.readRun(runId)
+  }
+
+  readActiveRuns(): Promise<RunLedgerEntry[]> {
+    return this.runLedgerStore.readActiveRuns()
+  }
+
+  readRecentRuns(limit = 20): Promise<RunLedgerEntry[]> {
+    return this.runLedgerStore.readRecentRuns(limit)
   }
 
   async writeHeartbeat(input: WriteHeartbeatInput): Promise<KernelHeartbeat> {
@@ -109,7 +134,7 @@ export class DurableRuntime {
     workerId?: string
   }): Promise<RecoveryDecision> {
     const runId = input.runId
-    const latestRun = await this.readLatestRunLedger(runId)
+    const latestRun = await this.readRun(runId)
     const latestSnapshot = await this.runSnapshotStore.readLatestSnapshot(runId)
     const latestCheckpoint = await this.checkpointManager.readLatestCheckpoint({ runId })
     const events = await this.readRunEvents(runId)
@@ -136,8 +161,9 @@ export class DurableRuntime {
     const events = await this.readRunEvents(runId)
     const checkpoints = await this.checkpointManager.readCheckpoints({ runId })
     const snapshots = await this.runSnapshotStore.readSnapshots(runId)
-    const latestRun = await this.readLatestRunLedger(runId)
+    const latestRun = await this.readRun(runId)
     const recoveryDecision = await this.decideRecovery({ runId })
+    const corruptionWarnings = await this.readCorruptionWarnings()
     const result = this.consistencyAudit.run({
       runId,
       events,
@@ -145,11 +171,37 @@ export class DurableRuntime {
       snapshots,
       latestRun,
       recoveryDecision,
+      corruptionWarnings,
     })
     if (result.errors.length) {
       await this.appendCorruptionDetected(runId, result.errors)
     }
     return result
+  }
+
+  async createMaintenanceReport(input: { nowMs?: number; heartbeatTtlMs?: number } = {}): Promise<DurableMaintenanceReport> {
+    const eventRead = await this.eventStore.readWithCorruption()
+    const checkpointRead = await this.checkpointManager.readWithCorruption()
+    const snapshotRead = await this.runSnapshotStore.readWithCorruption()
+    const heartbeatRead = await this.heartbeatManager.readWithCorruption()
+    const heartbeats = heartbeatRead.records
+    const nowMs = input.nowMs ?? Date.now()
+    const heartbeatTtlMs = input.heartbeatTtlMs ?? 30_000
+    return {
+      latestSeq: eventRead.records.reduce((latest, event) => Math.max(latest, event.seq), 0),
+      eventCount: eventRead.records.length,
+      corruptRecordCount: eventRead.corruptRecords.length + checkpointRead.corruptRecords.length + snapshotRead.corruptRecords.length + heartbeatRead.corruptRecords.length,
+      activeRuns: await this.readActiveRuns(),
+      staleHeartbeats: heartbeats.filter(heartbeat => nowMs - heartbeat.lastHeartbeatAtMs > heartbeatTtlMs),
+      recentCorruptionEvents: eventRead.records
+        .filter(event => event.eventType === 'run_corruption_detected')
+        .sort((left, right) => right.seq - left.seq)
+        .slice(0, 20),
+    }
+  }
+
+  repairSeqFromEventsForMaintenance(): Promise<void> {
+    return this.eventStore.repairSeqFromEvents()
   }
 
   async readEvents(input: { threadId?: string; runId?: string; loopId?: string } = {}): Promise<EventEnvelope[]> {
@@ -160,18 +212,12 @@ export class DurableRuntime {
     return this.checkpointManager.readCheckpoints(input)
   }
 
-  private async readLatestRunLedger(runId: string): Promise<RunLedgerEntry | undefined> {
-    return (await this.runLedgerStore.readRecords())
-      .filter(entry => entry.runId === runId)
-      .sort((left, right) => right.updatedAtMs - left.updatedAtMs)[0]
-  }
-
   private async detectCorruption(runId: string): Promise<string[]> {
     const events = await this.readRunEvents(runId)
     const eventSeqs = new Set(events.map(event => event.seq))
     const checkpoints = await this.checkpointManager.readCheckpoints({ runId })
     const snapshots = await this.runSnapshotStore.readSnapshots(runId)
-    const latestRun = await this.readLatestRunLedger(runId)
+    const latestRun = await this.readRun(runId)
     const latestSnapshot = snapshots.sort((left, right) => right.lastEventSeq - left.lastEventSeq)[0]
     const errors: string[] = []
     for (const checkpoint of checkpoints) {
@@ -188,6 +234,21 @@ export class DurableRuntime {
       errors.push(`run ledger status ${latestRun.status} drifts from snapshot status ${latestSnapshot.status}`)
     }
     return errors
+  }
+
+  private async readCorruptionWarnings(): Promise<string[]> {
+    const [events, checkpoints, snapshots, heartbeats] = await Promise.all([
+      this.eventStore.readWithCorruption(),
+      this.checkpointManager.readWithCorruption(),
+      this.runSnapshotStore.readWithCorruption(),
+      this.heartbeatManager.readWithCorruption(),
+    ])
+    return [
+      ...events.corruptRecords.map(record => `event jsonl corruption line ${record.lineNumber}: ${record.message}`),
+      ...checkpoints.corruptRecords.map(record => `checkpoint jsonl corruption line ${record.lineNumber}: ${record.message}`),
+      ...snapshots.corruptRecords.map(record => `snapshot jsonl corruption line ${record.lineNumber}: ${record.message}`),
+      ...heartbeats.corruptRecords.map(record => `heartbeat jsonl corruption line ${record.lineNumber}: ${record.message}`),
+    ]
   }
 
   private async appendCorruptionDetected(runId: string, errors: readonly string[]): Promise<void> {

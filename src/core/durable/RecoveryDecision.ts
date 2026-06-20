@@ -1,5 +1,5 @@
-import type { EventEnvelope } from '../protocol/index.js'
-import type { RunLedgerEntry } from '../agent/index.js'
+﻿import type { EventEnvelope } from '../protocol/index.js'
+import type { RunLedgerEntry } from './RunLedgerStore.js'
 import type { KernelCheckpoint } from './CheckpointTypes.js'
 import type { KernelHeartbeat } from './HeartbeatManager.js'
 import type { RunSnapshot } from './RunSnapshotTypes.js'

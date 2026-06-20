@@ -1,4 +1,4 @@
-import type { EventEnvelope } from '../protocol/index.js'
+﻿import type { EventEnvelope } from '../protocol/index.js'
 import type { RunLedgerEntry } from '../agent/index.js'
 import type { KernelCheckpoint } from './CheckpointTypes.js'
 import type { RecoveryDecision } from './RecoveryDecision.js'
@@ -13,6 +13,7 @@ export type ConsistencyAuditResult = {
   latestCheckpoint?: KernelCheckpoint
   latestSnapshot?: RunSnapshot
   recoveryDecision: RecoveryDecision
+  corruptionWarnings?: readonly string[]
 }
 
 export type ConsistencyAuditInput = {
@@ -22,11 +23,12 @@ export type ConsistencyAuditInput = {
   snapshots: readonly RunSnapshot[]
   latestRun?: RunLedgerEntry
   recoveryDecision: RecoveryDecision
+  corruptionWarnings?: readonly string[]
 }
 
 export class ConsistencyAudit {
   run(input: ConsistencyAuditInput): ConsistencyAuditResult {
-    const warnings: string[] = []
+    const warnings: string[] = [...(input.corruptionWarnings ?? [])]
     const errors: string[] = []
     const events = [...input.events].sort((left, right) => left.seq - right.seq)
     const latestSeq = events.reduce((latest, event) => Math.max(latest, event.seq), 0)

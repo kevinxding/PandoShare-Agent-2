@@ -1,6 +1,6 @@
-import { AtomicFileStore, FileLock, RuntimePaths } from '../store/index.js'
+﻿import { AtomicFileStore, ProcessFileLock, RuntimePaths } from '../store/index.js'
 
-type EventSeqState = {
+export type EventSeqState = {
   workspaceId: string
   latestSeq: number
   updatedAtMs: number
@@ -8,32 +8,70 @@ type EventSeqState = {
 
 export class EventSeq {
   private readonly atomic = new AtomicFileStore()
-  private readonly lock = new FileLock()
+  private readonly lock: ProcessFileLock
 
-  constructor(private readonly paths: RuntimePaths) {}
+  constructor(private readonly paths: RuntimePaths) {
+    this.lock = new ProcessFileLock(paths.eventSeqPath())
+  }
 
   async next(): Promise<number> {
-    return this.lock.withLock(this.paths.eventSeqPath(), async () => {
-      const state = await this.read()
-      const nextSeq = state.latestSeq + 1
-      await this.atomic.writeJson(this.paths.eventSeqPath(), {
-        workspaceId: this.paths.workspaceId,
-        latestSeq: nextSeq,
-        updatedAtMs: Date.now(),
-      } satisfies EventSeqState)
-      return nextSeq
+    return this.lock.withLock({ reason: `event seq ${this.paths.workspaceId}` }, () => this.nextInTransaction())
+  }
+
+  async nextInTransaction(): Promise<number> {
+    const state = await this.read()
+    const nextSeq = state.latestSeq + 1
+    await this.write({
+      workspaceId: this.paths.workspaceId,
+      latestSeq: nextSeq,
+      updatedAtMs: Date.now(),
     })
+    return nextSeq
   }
 
   async latest(): Promise<number> {
     return (await this.read()).latestSeq
   }
 
-  private async read(): Promise<EventSeqState> {
-    return (await this.atomic.readJson<EventSeqState>(this.paths.eventSeqPath())) ?? {
-      workspaceId: this.paths.workspaceId,
-      latestSeq: 0,
-      updatedAtMs: 0,
-    }
+  async repairSeqFromEvents(latestEventSeq: number): Promise<EventSeqState> {
+    return this.lock.withLock({ reason: `repair event seq ${this.paths.workspaceId}` }, async () => {
+      const current = await this.read().catch(() => ({
+        workspaceId: this.paths.workspaceId,
+        latestSeq: 0,
+        updatedAtMs: 0,
+      }))
+      const repaired: EventSeqState = {
+        workspaceId: this.paths.workspaceId,
+        latestSeq: Math.max(current.latestSeq, latestEventSeq),
+        updatedAtMs: Date.now(),
+      }
+      await this.write(repaired)
+      return repaired
+    })
   }
+
+  private async read(): Promise<EventSeqState> {
+    const state = await this.atomic.readJson<EventSeqState>(this.paths.eventSeqPath())
+    if (!state) {
+      return {
+        workspaceId: this.paths.workspaceId,
+        latestSeq: 0,
+        updatedAtMs: 0,
+      }
+    }
+    validateEventSeqState(state, this.paths.workspaceId)
+    return state
+  }
+
+  private write(state: EventSeqState): Promise<void> {
+    validateEventSeqState(state, this.paths.workspaceId)
+    return this.atomic.writeJson(this.paths.eventSeqPath(), state)
+  }
+}
+
+function validateEventSeqState(state: EventSeqState, workspaceId: string): void {
+  if (!state || typeof state !== 'object') throw new Error('Event seq state is corrupt')
+  if (state.workspaceId !== workspaceId) throw new Error(`Event seq workspace mismatch: ${state.workspaceId}`)
+  if (!Number.isInteger(state.latestSeq) || state.latestSeq < 0) throw new Error('Event seq latestSeq is corrupt')
+  if (typeof state.updatedAtMs !== 'number' || !Number.isFinite(state.updatedAtMs)) throw new Error('Event seq updatedAtMs is corrupt')
 }

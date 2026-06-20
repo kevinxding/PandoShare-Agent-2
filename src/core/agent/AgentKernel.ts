@@ -1,4 +1,4 @@
-import type { QueryEngineOptions } from '../../QueryEngine.js'
+﻿import type { QueryEngineOptions } from '../../QueryEngine.js'
 import type { QueryTurnOutput } from '../../query.js'
 import type { AgentEvent } from '../../services/events/index.js'
 import {
@@ -17,7 +17,6 @@ import {
 import { AgentCommandHandler } from './AgentCommandHandler.js'
 import { AgentKernelAdapter } from './AgentKernelAdapter.js'
 import { AgentKernelEventBridge } from './AgentKernelEventBridge.js'
-import { RunLedger } from './RunLedger.js'
 import type { RunContext } from './RunContext.js'
 import { createRunIdentity } from './RunIdentity.js'
 import { RunStateMachine, type RunState } from './RunStateMachine.js'
@@ -43,19 +42,17 @@ export class AgentKernel {
   private readonly adapter: AgentKernelAdapter
   private readonly commandHandler: AgentCommandHandler
   private readonly stateMachine: RunStateMachine
-  private readonly runLedger: RunLedger
   private readonly eventBridge = new AgentKernelEventBridge()
   private readonly envelopeEvents: EventEnvelope[] = []
 
   constructor(private readonly options: AgentKernelOptions) {
     this.workspaceId = options.workspaceId ?? 'default'
     this.durable = options.durable ?? new DurableRuntime({ workspaceRoot: options.cwd, workspaceId: this.workspaceId })
-    this.runLedger = RunLedger.fromRuntimePaths(this.durable.paths)
     this.adapter = new AgentKernelAdapter(options)
     this.stateMachine = new RunStateMachine(
       event => this.appendCoreEvent(event),
       async state => {
-        await this.runLedger.append(state)
+        await this.durable.appendRunLedger(state)
       },
     )
     this.commandHandler = new AgentCommandHandler({

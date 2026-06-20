@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "pandoshare-agent",
   "version": "0.1.0",
   "private": true,
@@ -25,6 +25,7 @@
     "harness:smoke": "npm run build -- --pretty false && node scripts/harness-smoke.mjs",
     "kernel:smoke": "npm run build -- --pretty false && node scripts/kernel-smoke.mjs",
     "durable:smoke": "npm run build -- --pretty false && node scripts/durable-smoke.mjs",
+    "durable:hardening-smoke": "npm run build -- --pretty false && node scripts/durable-hardening-smoke.mjs",
     "events:smoke": "npm run build -- --pretty false && node scripts/event-protocol-smoke.mjs",
     "context-builder:smoke": "npm run build -- --pretty false && node scripts/context-builder-smoke.mjs",
     "compact:smoke": "npm run build -- --pretty false && node scripts/compact-smoke.mjs",

@@ -1,4 +1,4 @@
-# Durable Runtime V1
+﻿# Durable Runtime V1
 
 ## Boundary
 
@@ -101,3 +101,9 @@ These become `requires_human` when present in a checkpoint or recovery context.
 - Add replay CLI commands for run and thread timelines.
 - Add stale active-run cleanup and operator review workflows.
 - Add ThreadStore migration onto core store primitives.
+
+## V1.1 Hardening Addendum
+
+V1.1 hardens local multi-process execution by adding ProcessFileLock, locked JSONL append, durable seq transaction boundaries, DurableRuntime-owned RunLedgerStore, SideEffectClassifier, checkpoint downgrade from unsafe effects, and maintenance reports.
+
+Seq repair remains explicit maintenance-only behavior. RecoveryDecision still only decides; it does not resume execution.
