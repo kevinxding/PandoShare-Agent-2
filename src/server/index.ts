@@ -6,6 +6,7 @@ import { spawn, type ChildProcess } from 'node:child_process'
 import { platform } from 'node:os'
 
 import { AgentKernel } from '../core/agent/index.js'
+import { GatewayDaemon } from '../core/gateway/index.js'
 import {
   LocalApprovalStore,
   storedApprovalToDecision,
@@ -343,13 +344,32 @@ async function handleApiRequest(
     return
   }
 
+  if (method === 'GET' && url.pathname === '/api/gateway/status') {
+    await handleGatewayV2StatusRequest(response, runtime)
+    return
+  }
+
+  if (method === 'POST' && url.pathname === '/api/gateway/tick') {
+    await handleGatewayV2TickRequest(request, response, runtime)
+    return
+  }
+
+  if (method === 'POST' && url.pathname === '/api/gateway/approve') {
+    await handleGatewayV2ApprovalRequest(request, response, runtime, 'approve')
+    return
+  }
+
+  if (method === 'POST' && url.pathname === '/api/gateway/deny') {
+    await handleGatewayV2ApprovalRequest(request, response, runtime, 'deny')
+    return
+  }
   if (method === 'GET' && url.pathname === '/api/gateway') {
     await handleGatewayStatusRequest(response, runtime)
     return
   }
 
   if (method === 'POST' && url.pathname === '/api/gateway/start') {
-    await handleGatewayStartRequest(request, response, runtime)
+    await handleGatewayV2StartRequest(request, response, runtime)
     return
   }
 
@@ -359,7 +379,7 @@ async function handleApiRequest(
   }
 
   if (method === 'POST' && url.pathname === '/api/gateway/stop') {
-    await handleGatewayStopRequest(response, runtime)
+    await handleGatewayV2StopRequest(response, runtime)
     return
   }
 
@@ -369,7 +389,7 @@ async function handleApiRequest(
   }
 
   if (method === 'POST' && url.pathname === '/api/gateway/inbound') {
-    await handleGatewayInboundRequest(request, response, runtime)
+    await handleGatewayV2InboundRequest(request, response, runtime)
     return
   }
 
@@ -1338,6 +1358,113 @@ async function handleLoopActionRequest(
   sendJson(response, 200, { ok: true, output, summary: await store.readSummary(loopId) })
 }
 
+async function handleGatewayV2StartRequest(
+  _request: IncomingMessage,
+  response: ServerResponse,
+  runtime: ServerRuntime,
+): Promise<void> {
+  const gateway = createGatewayV2ForServer(runtime)
+  sendJson(response, 200, { ok: true, started: true, status: await gateway.start() })
+}
+
+async function handleGatewayV2StopRequest(response: ServerResponse, runtime: ServerRuntime): Promise<void> {
+  const gateway = createGatewayV2ForServer(runtime)
+  sendJson(response, 200, { ok: true, stopped: true, status: await gateway.stop('Gateway stop requested from server API.') })
+}
+
+async function handleGatewayV2InboundRequest(
+  request: IncomingMessage,
+  response: ServerResponse,
+  runtime: ServerRuntime,
+): Promise<void> {
+  const body = await readJsonBody(request)
+  const channelId = typeof body.channelId === 'string' && body.channelId.trim() ? body.channelId.trim() : 'local'
+  if (!/^[A-Za-z0-9_-]+$/.test(channelId)) {
+    sendJson(response, 400, { ok: false, error: 'channelId must be an ASCII channel id' })
+    return
+  }
+  const channel = runtime.config.gateway?.channels?.[channelId]
+  if (!isGatewayInboundSecretAccepted(request, body, channel)) {
+    sendJson(response, 403, { ok: false, error: `gateway inbound secret is not accepted for channel ${channelId}` })
+    return
+  }
+  const inbound = parseGatewayInboundMessage(channelId, channel, body)
+  if (!inbound.text) {
+    sendJson(response, 400, { ok: false, error: 'gateway inbound text must be provided' })
+    return
+  }
+  const gateway = createGatewayV2ForServer(runtime)
+  const received = await gateway.receiveInbound({
+    channelId,
+    channelKind: inferGatewayChannelKind(channelId),
+    externalMessageId: typeof body.externalMessageId === 'string' ? body.externalMessageId : undefined,
+    userId: inbound.userId,
+    text: inbound.text,
+    rawRef: typeof body.rawRef === 'string' ? { summary: body.rawRef } : undefined,
+  })
+  const dispatch = received.denied || received.duplicate ? undefined : await gateway.dispatchNextInbound()
+  const delivery = await gateway.sendNextOutbound()
+  sendJson(response, 200, {
+    ok: true,
+    inboundId: received.envelope.inboundId,
+    duplicate: received.duplicate,
+    denied: received.denied,
+    commandId: dispatch?.commandId,
+    deliveryId: delivery?.deliveryId,
+    status: dispatch?.ok === false ? 'failed' : received.duplicate ? 'deduped' : received.denied ? 'denied' : 'queued',
+  })
+}
+async function handleGatewayV2StatusRequest(response: ServerResponse, runtime: ServerRuntime): Promise<void> {
+  const gateway = createGatewayV2ForServer(runtime)
+  sendJson(response, 200, {
+    ok: true,
+    status: await gateway.status(),
+    pendingApprovals: await gateway.listPendingApprovals(),
+  })
+}
+
+async function handleGatewayV2TickRequest(
+  request: IncomingMessage,
+  response: ServerResponse,
+  runtime: ServerRuntime,
+): Promise<void> {
+  const body = await readJsonBody(request)
+  const gateway = createGatewayV2ForServer(runtime)
+  const output = await gateway.tick({
+    maxInbound: positiveIntegerBody(body.maxInbound, 5),
+    maxOutbound: positiveIntegerBody(body.maxOutbound, 5),
+  })
+  sendJson(response, 200, { ok: true, output })
+}
+
+async function handleGatewayV2ApprovalRequest(
+  request: IncomingMessage,
+  response: ServerResponse,
+  runtime: ServerRuntime,
+  decision: 'approve' | 'deny',
+): Promise<void> {
+  const body = await readJsonBody(request)
+  const approvalId = typeof body.approvalId === 'string' && body.approvalId.trim()
+    ? body.approvalId.trim()
+    : typeof body.id === 'string' && body.id.trim()
+      ? body.id.trim()
+      : ''
+  if (!approvalId) {
+    sendJson(response, 400, { ok: false, error: 'approvalId must be provided' })
+    return
+  }
+  const gateway = createGatewayV2ForServer(runtime)
+  const result = await gateway.approvalBridge.resolveApproval(approvalId, decision, 'server')
+  sendJson(response, result.ok ? 200 : 404, { ok: result.ok, result })
+}
+
+function createGatewayV2ForServer(runtime: ServerRuntime): GatewayDaemon {
+  return new GatewayDaemon({
+    workspaceRoot: runtime.cwd,
+    workspaceId: 'default',
+    source: 'server',
+  })
+}
 async function handleGatewayStatusRequest(response: ServerResponse, runtime: ServerRuntime): Promise<void> {
   const store = new LocalGatewayStore(runtime.cwd)
   const gateway = new GatewayRuntime(store, new LocalLoopStore(runtime.cwd), runtime.approvalStore)

@@ -129,3 +129,25 @@ Next migration round:
 2. Model Router V2 should support GUI and vision routing.
 3. Event Replay V2 should enrich screenshot references and diff refs.
 4. Web UI Mission Control should display GUI timelines and pending approvals.
+
+## Gateway Daemon V2 Update
+
+Implemented in this pass:
+
+- Added Gateway V2 event constants, identity, inbound/outbound envelopes, dedupe helpers, and append-only GatewayStore.
+- Added channel adapter interface with local, mock, Telegram, Feishu, Lark, and WeCom adapter classes.
+- Upgraded GatewayCommandRouter to the V2 command matrix.
+- Added GatewayDispatcher, GatewayApprovalBridge, GatewayWakeScheduler, and GatewayLegacyAdapter.
+- Refactored GatewayDaemon around `start`, `stop`, `status`, `receiveInbound`, `dispatchNextInbound`, `sendNextOutbound`, `tick`, `recover`, `health`, `listPendingApprovals`, and `enqueueOutbound`.
+- Added retry/backoff behavior and `requires_human` recovery escalation without unsafe replay.
+- Added Gateway Timeline support to replay reports.
+- Added minimal server V2 start/stop/inbound/status/tick/approve/deny endpoints while preserving legacy gateway routes.
+- Added `gateway:core-smoke`, `gateway:command-smoke`, `gateway:delivery-smoke`, `gateway:approval-smoke`, and `gateway:recovery-smoke`.
+
+Next migration round:
+
+1. Model Router V2: provider capability, cost, fallback, and profile routing.
+2. Event Replay V2: cross-core timeline and operator debugger.
+3. Web Mission Control: Gateway, Loop, GUI approval and health UI.
+4. Daemon installer/system service as a separate hardening pass.
+5. Full replacement or deep bridging of legacy gatewayRuntime only after Web and CLI compatibility is covered.

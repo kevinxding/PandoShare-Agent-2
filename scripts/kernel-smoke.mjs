@@ -281,7 +281,7 @@ async function smokeGatewayRouter(core) {
     text: '/goal build the kernel',
     createdAtMs: Date.now(),
   })
-  assert(route.command.commandType === 'loop.goal', `expected loop.goal, got ${route.command.commandType}`)
+  assert(route.command.commandType === 'loop.create', `expected loop.create, got ${route.command.commandType}`)
   assert(route.command.source === 'gateway', 'gateway command source should be gateway')
 }
 

@@ -109,3 +109,14 @@ New core code should not import Web, CLI, or server modules.
 - GUI recovery must not automatically replay write or dangerous actions.
 - GUI action truth comes from DurableRuntime events and checkpoints, not `GuiObservationStore`.
 - `GuiObservationStore` is an indexed action/observation record log for replay and diagnostics.
+
+## Gateway Daemon V2 Boundaries
+
+- Gateway must not directly call `QueryEngine`.
+- Gateway must not directly execute GUI or Dingxu raw tools.
+- Gateway must not directly execute shell/tool operations.
+- Gateway outbound must go through a durable outbound queue.
+- Gateway inbound must be deduped before routing.
+- Gateway approvals must be represented by durable events.
+- Gateway recovery must not automatically replay unsafe effects.
+- Gateway adapters may send/receive channel messages, but command routing and approval decisions stay in Gateway core.

@@ -70,7 +70,12 @@
     "loop:recovery-smoke": "npm run build -- --pretty false && node scripts/loop-recovery-smoke.mjs",
     "gui:runtime-smoke": "npm run build -- --pretty false && node scripts/gui-runtime-smoke.mjs",
     "gui:approval-smoke": "npm run build -- --pretty false && node scripts/gui-approval-smoke.mjs",
-    "gui:recovery-smoke": "npm run build -- --pretty false && node scripts/gui-recovery-smoke.mjs"
+    "gui:recovery-smoke": "npm run build -- --pretty false && node scripts/gui-recovery-smoke.mjs",
+    "gateway:core-smoke": "npm run build -- --pretty false && node scripts/gateway-core-smoke.mjs",
+    "gateway:command-smoke": "npm run build -- --pretty false && node scripts/gateway-command-smoke.mjs",
+    "gateway:delivery-smoke": "npm run build -- --pretty false && node scripts/gateway-delivery-smoke.mjs",
+    "gateway:approval-smoke": "npm run build -- --pretty false && node scripts/gateway-approval-smoke.mjs",
+    "gateway:recovery-smoke": "npm run build -- --pretty false && node scripts/gateway-recovery-smoke.mjs"
   },
   "engines": {
     "node": ">=18.0.0"

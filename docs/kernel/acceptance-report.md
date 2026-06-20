@@ -176,3 +176,61 @@ Final GUI Runtime V2 verification:
 - `npm run gui:recovery-smoke` passed.
 - `npm run gateway:smoke` passed.
 - `npm run model-smoke` passed.
+
+## Gateway Daemon V2 Acceptance Update
+
+Implemented in this pass:
+
+- Added Gateway V2 event contract, identity, envelope, operational store, channel adapter, dispatcher, approval bridge, wake scheduler, retry policy, legacy adapter, and daemon control loop.
+- `GatewayDaemon` now exposes `start`, `stop`, `status`, `tick`, `recover`, `receiveInbound`, `dispatchNextInbound`, `sendNextOutbound`, `health`, `listPendingApprovals`, and `enqueueOutbound`.
+- Inbound queue dedupes duplicate external messages before dispatch.
+- Outbound queue persists delivery state and supports retry/backoff with stable `deliveryId`.
+- CommandRouter V2 covers `/goal`, `/resume`, `/approve`, `/deny`, `/gui`, `/model`, `/usage`, `/help`, and related gateway commands.
+- Dispatcher calls only core public APIs or injected Gateway callbacks; it does not call QueryEngine or raw GUI adapters.
+- ApprovalBridge lists and resolves agent, loop, GUI, recovery, delivery, and model-switch approval types.
+- WakeScheduler can trigger at most one background loop task per tick.
+- Recovery escalation queues human handling for unsafe/requires-human decisions without replaying external effects.
+- Replay reports include a Gateway Timeline section.
+- Legacy gatewayRuntime remains intact and is bridged through GatewayLegacyAdapter.
+
+Verification run during implementation:
+
+- `npm run typecheck` passed.
+- `npm run gateway:core-smoke` passed.
+- `npm run gateway:command-smoke` passed.
+- `npm run gateway:delivery-smoke` passed.
+- `npm run gateway:approval-smoke` passed.
+- `npm run gateway:recovery-smoke` passed.
+
+Known unfinished items:
+
+- Real long-running process manager is not implemented.
+- System service install is not implemented.
+- Complex cron DSL is not implemented.
+- Full real Telegram/Feishu/Lark/WeCom webhook integration is not implemented.
+- Multi-workspace gateway supervisor is not implemented.
+- Web approval UI is not implemented.
+- Legacy gatewayRuntime is preserved, not removed or fully replaced.
+
+Final Gateway Daemon V2 verification:
+
+- `npm run typecheck` passed.
+- `npm run check` passed.
+- `npm run kernel:smoke` passed.
+- `npm run durable:smoke` passed.
+- `npm run durable:hardening-smoke` passed.
+- `npm run loop:core-smoke` passed.
+- `npm run loop:projection-smoke` passed.
+- `npm run loop:recovery-smoke` passed.
+- `npm run loop-runtime:smoke` passed.
+- `npm run gui-tool:smoke` passed.
+- `npm run gui:runtime-smoke` passed.
+- `npm run gui:approval-smoke` passed.
+- `npm run gui:recovery-smoke` passed.
+- `npm run gateway:smoke` passed.
+- `npm run gateway:core-smoke` passed.
+- `npm run gateway:command-smoke` passed.
+- `npm run gateway:delivery-smoke` passed.
+- `npm run gateway:approval-smoke` passed.
+- `npm run gateway:recovery-smoke` passed.
+- `npm run model-smoke` passed.

@@ -39,6 +39,18 @@ export class ReplayReader {
     }
   }
 
+  async buildGatewayTimeline(input: { gatewayId?: string; channelId?: string; inboundId?: string; deliveryId?: string } = {}): Promise<ReplayTimelineItem[]> {
+    const events = await this.durable.readEvents()
+    return new EventReplay().buildTimeline(events.filter(event => {
+      if (!event.eventType.startsWith('gateway_')) return false
+      const payload = event.payload && typeof event.payload === 'object' && !Array.isArray(event.payload) ? event.payload as Record<string, unknown> : {}
+      if (input.gatewayId && payload.gatewayId !== input.gatewayId) return false
+      if (input.channelId && payload.channelId !== input.channelId) return false
+      if (input.inboundId && payload.inboundId !== input.inboundId) return false
+      if (input.deliveryId && payload.deliveryId !== input.deliveryId) return false
+      return true
+    }))
+  }
   replayLoop(loopId: string): Promise<LoopReplay> {
     return this.buildLoopReplay(loopId)
   }

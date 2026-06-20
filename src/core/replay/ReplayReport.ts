@@ -38,6 +38,7 @@ export class ReplayReport {
         '',
       ] : []),
       ...guiTimelineSection(input.timeline),
+      ...gatewayTimelineSection(input.timeline),
       ...(input.recoveryDecision ? [
         '## Recovery',
         '',
@@ -72,6 +73,30 @@ export class ReplayReport {
   }
 }
 
+function gatewayTimelineSection(timeline: readonly ReplayTimelineItem[]): string[] {
+  const gatewayItems = timeline.filter(item => item.category === 'gateway')
+  if (!gatewayItems.length) return []
+  const lines = ['## Gateway Timeline', '']
+  for (const item of gatewayItems) {
+    const payload = recordPayload(item.payload)
+    lines.push(`- ${item.seq}. ${item.eventType}: ${gatewaySummary(payload)}`)
+    for (const key of ['gatewayId', 'sessionId', 'channelId', 'channelKind', 'inboundId', 'deliveryId', 'commandId', 'commandType', 'approvalId', 'loopId', 'runId', 'status']) {
+      const value = stringValue(payload, key)
+      if (value) lines.push(`  ${key}: ${value}`)
+    }
+  }
+  lines.push('')
+  return lines
+}
+
+function gatewaySummary(payload: Record<string, unknown>): string {
+  return stringValue(payload, 'message')
+    ?? stringValue(payload, 'reason')
+    ?? stringValue(payload, 'textPreview')
+    ?? stringValue(payload, 'replyPreview')
+    ?? stringValue(payload, 'lastError')
+    ?? 'gateway event'
+}
 function guiTimelineSection(timeline: readonly ReplayTimelineItem[]): string[] {
   const guiItems = timeline.filter(item => item.category === 'gui')
   if (!guiItems.length) return []

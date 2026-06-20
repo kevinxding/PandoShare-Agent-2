@@ -1,6 +1,7 @@
 import type { CommandEnvelope } from '../protocol/index.js'
+import type { GatewayChannelKind } from './GatewayEnvelope.js'
 
-export type GatewayMessageKind = 'telegram' | 'feishu' | 'wecom' | 'local' | 'mock'
+export type GatewayMessageKind = GatewayChannelKind
 
 export type GatewayInboundMessage = {
   messageId: string
@@ -23,4 +24,6 @@ export type GatewayOutboundDelivery = {
 export type GatewayCommandRoute = {
   command: CommandEnvelope
   replyText?: string
+  inboundId?: string
+  known: boolean
 }
