@@ -146,8 +146,25 @@ Implemented in this pass:
 
 Next migration round:
 
-1. Model Router V2: provider capability, cost, fallback, and profile routing.
 2. Event Replay V2: cross-core timeline and operator debugger.
 3. Web Mission Control: Gateway, Loop, GUI approval and health UI.
 4. Daemon installer/system service as a separate hardening pass.
 5. Full replacement or deep bridging of legacy gatewayRuntime only after Web and CLI compatibility is covered.
+
+## Model Router V2 Update
+
+Implemented in this pass:
+
+- Replaced the thin selector with audited route decisions and legacy `selectModel` compatibility.
+- Added provider catalog, capability graph, routing profiles, policy scoring, fallback planning, health records, budget decisions, usage records, and execution bridge.
+- Added durable model events and ReplayReport Model Timeline support.
+- Added Gateway `/model status|list|route|set|health|usage|budget` command routing.
+- Added focused smoke tests for router, capability filtering, fallback, budget, and profiles.
+
+Next migration round:
+
+1. Web Mission Control model picker and per-profile editor.
+2. Real provider health probes and benchmark history.
+3. Provider-specific tokenizers and price tables.
+4. Loop task scheduler integration with automatic profile selection.
+5. Multi-tenant budget scopes if the project moves beyond local single-user operation.

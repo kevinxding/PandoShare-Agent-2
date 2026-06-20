@@ -39,6 +39,7 @@ export class ReplayReport {
       ] : []),
       ...guiTimelineSection(input.timeline),
       ...gatewayTimelineSection(input.timeline),
+      ...modelTimelineSection(input.timeline),
       ...(input.recoveryDecision ? [
         '## Recovery',
         '',
@@ -73,6 +74,29 @@ export class ReplayReport {
   }
 }
 
+function modelTimelineSection(timeline: readonly ReplayTimelineItem[]): string[] {
+  const modelItems = timeline.filter(item => item.category === 'model' || item.eventType.startsWith('model_'))
+  if (!modelItems.length) return []
+  const lines = ['## Model Timeline', '']
+  for (const item of modelItems) {
+    const payload = recordPayload(item.payload)
+    lines.push(`- ${item.seq}. ${item.eventType}: ${modelSummary(payload)}`)
+    for (const key of ['routeId', 'profileId', 'taskType', 'selectedProviderId', 'selectedModelId', 'providerId', 'modelId', 'status', 'reason']) {
+      const value = stringValue(payload, key)
+      if (value) lines.push(`  ${key}: ${value}`)
+    }
+  }
+  lines.push('')
+  return lines
+}
+
+function modelSummary(payload: Record<string, unknown>): string {
+  return stringValue(payload, 'message')
+    ?? stringValue(payload, 'reason')
+    ?? stringValue(payload, 'selectedProviderId')
+    ?? stringValue(payload, 'providerId')
+    ?? 'model event'
+}
 function gatewayTimelineSection(timeline: readonly ReplayTimelineItem[]): string[] {
   const gatewayItems = timeline.filter(item => item.category === 'gateway')
   if (!gatewayItems.length) return []

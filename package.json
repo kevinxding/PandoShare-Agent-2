@@ -75,7 +75,12 @@
     "gateway:command-smoke": "npm run build -- --pretty false && node scripts/gateway-command-smoke.mjs",
     "gateway:delivery-smoke": "npm run build -- --pretty false && node scripts/gateway-delivery-smoke.mjs",
     "gateway:approval-smoke": "npm run build -- --pretty false && node scripts/gateway-approval-smoke.mjs",
-    "gateway:recovery-smoke": "npm run build -- --pretty false && node scripts/gateway-recovery-smoke.mjs"
+    "gateway:recovery-smoke": "npm run build -- --pretty false && node scripts/gateway-recovery-smoke.mjs",
+    "model:router-smoke": "npm run build -- --pretty false && node scripts/model-router-smoke.mjs",
+    "model:capability-smoke": "npm run build -- --pretty false && node scripts/model-capability-smoke.mjs",
+    "model:fallback-smoke": "npm run build -- --pretty false && node scripts/model-fallback-smoke.mjs",
+    "model:budget-smoke": "npm run build -- --pretty false && node scripts/model-budget-smoke.mjs",
+    "model:profile-smoke": "npm run build -- --pretty false && node scripts/model-profile-smoke.mjs"
   },
   "engines": {
     "node": ">=18.0.0"

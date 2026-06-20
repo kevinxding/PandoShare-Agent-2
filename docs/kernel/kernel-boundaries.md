@@ -120,3 +120,12 @@ New core code should not import Web, CLI, or server modules.
 - Gateway approvals must be represented by durable events.
 - Gateway recovery must not automatically replay unsafe effects.
 - Gateway adapters may send/receive channel messages, but command routing and approval decisions stay in Gateway core.
+
+## Model Router V2 Boundaries
+
+- Model Router must not call GUI raw tools, Gateway adapters, Web UI, CLI, or server code.
+- Model Router may read provider config and LLM provider definitions, but transport stays in `src/services/llm`.
+- Model Router owns provider/model selection, health state, fallback planning, budget decisions, usage records, and model_* durable events.
+- Model Router must not store API keys, access tokens, raw auth headers, or secret-bearing provider payloads.
+- Gateway, Loop, GUI, and Agent Kernel may ask Model Router for decisions, but they must not duplicate provider scoring logic.
+- Missing auth is a diagnostic state, not a secret value; only env key names may appear in safe summaries.

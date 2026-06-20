@@ -32,7 +32,7 @@ export type GatewayDispatcherInput = {
   replayProvider?: (targetId: string) => unknown | Promise<unknown>
   compactProvider?: (threadId: string) => unknown | Promise<unknown>
   backgroundEnroll?: (loopId: string) => unknown | Promise<unknown>
-  modelProvider?: (input: { provider?: string; model?: string }) => unknown | Promise<unknown>
+  modelProvider?: (input: { action?: string; provider?: string; model?: string; profileId?: string; taskType?: string }) => unknown | Promise<unknown>
 }
 
 export class GatewayDispatcher {
@@ -87,8 +87,15 @@ export class GatewayDispatcher {
       const loopId = requirePayload(command.payload, 'loopId')
       return this.result(command, formatResult('Pando background loop enrolled', await this.input.backgroundEnroll?.(loopId)), true, { loopId })
     }
-    if (command.commandType === 'gateway.model.status' || command.commandType === 'gateway.model.switch') {
-      return this.result(command, formatResult('Pando model', await this.input.modelProvider?.({ provider: stringPayload(command.payload, 'provider'), model: stringPayload(command.payload, 'model') })))
+        if (command.commandType.startsWith('gateway.model.')) {
+      const action = command.commandType.slice('gateway.model.'.length)
+      return this.result(command, formatResult('Pando model', await this.input.modelProvider?.({
+        action,
+        provider: stringPayload(command.payload, 'provider'),
+        model: stringPayload(command.payload, 'model'),
+        profileId: stringPayload(command.payload, 'profileId'),
+        taskType: stringPayload(command.payload, 'taskType'),
+      })))
     }
     if (command.commandType === 'gateway.pair' || command.commandType === 'gateway.unpair' || command.commandType === 'gateway.stop') {
       return this.result(command, route.replyText ?? `queued ${command.commandType}`)

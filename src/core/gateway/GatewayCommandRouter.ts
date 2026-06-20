@@ -45,9 +45,7 @@ export class GatewayCommandRouter {
       case '/gui':
         return this.routeGui(normalized, rest)
       case '/model':
-        return rest.length
-          ? this.command(normalized, 'gateway.model.switch', { provider: rest[0], model: rest[1], message: normalized }, 'Gateway model switch requested.')
-          : this.command(normalized, 'gateway.model.status', { message: normalized }, 'Gateway model status requested.')
+        return this.routeModel(normalized, rest)
       case '/compress':
         return this.command(normalized, 'thread.compact', { threadId: rest[0], reason: 'gateway_manual', message: normalized }, `queued thread.compact`, { threadId: rest[0] })
       case '/threads':
@@ -65,6 +63,21 @@ export class GatewayCommandRouter {
     }
   }
 
+  private routeModel(message: NormalizedGatewayMessage, rest: string[]): GatewayCommandRoute {
+    const action = rest[0]?.toLowerCase()
+    if (!action || action === 'status') return this.command(message, 'gateway.model.status', { message }, 'Gateway model status requested.')
+    if (action === 'list') return this.command(message, 'gateway.model.list', { message }, 'Gateway model list requested.')
+    if (action === 'health') return this.command(message, 'gateway.model.health', { message }, 'Gateway model health requested.')
+    if (action === 'usage') return this.command(message, 'gateway.model.usage', { message }, 'Gateway model usage requested.')
+    if (action === 'budget') return this.command(message, 'gateway.model.budget', { message }, 'Gateway model budget requested.')
+    if (action === 'route') return this.command(message, 'gateway.model.route', { taskType: rest[1] ?? 'code', profileId: rest[2], message }, 'Gateway model route requested.')
+    if (action === 'set') {
+      const profileId = rest[1]
+      const [provider, model] = splitProviderModel(rest[2], rest[3])
+      return this.command(message, 'gateway.model.set', { profileId, provider, model, message }, 'Gateway model profile switch requested.')
+    }
+    return this.command(message, 'gateway.model.switch', { provider: rest[0], model: rest[1], message }, 'Gateway model switch requested.')
+  }
   private routeGui(message: NormalizedGatewayMessage, rest: string[]): GatewayCommandRoute {
     const action = rest[0]?.toLowerCase()
     const guiActionId = rest[1]
@@ -140,9 +153,16 @@ function normalizeMessage(message: RouteMessage): NormalizedGatewayMessage {
 function helpText(): string {
   return [
     'Pando gateway commands:',
-    '/status /health /usage /threads /loops /model',
+    '/status /health /usage /threads /loops /model status|list|route|set|health|usage|budget',
     '/goal <objective> /resume <loopId> /background <loopId> /pause <loopId> /stop [runId|loopId]',
     '/approve <id> /deny <id> /gui approve <guiActionId> /gui deny <guiActionId>',
     '/compress <threadId> /replay <runId|loopId> /pair <secret> /unpair',
   ].join('\n')
+}
+
+function splitProviderModel(providerOrPair: string | undefined, model: string | undefined): [string | undefined, string | undefined] {
+  if (!providerOrPair) return [undefined, model]
+  const slash = providerOrPair.indexOf('/')
+  if (slash === -1) return [providerOrPair, model]
+  return [providerOrPair.slice(0, slash), providerOrPair.slice(slash + 1) || model]
 }

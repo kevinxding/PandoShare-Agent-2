@@ -234,3 +234,27 @@ Final Gateway Daemon V2 verification:
 - `npm run gateway:approval-smoke` passed.
 - `npm run gateway:recovery-smoke` passed.
 - `npm run model-smoke` passed.
+
+## Model Router V2
+
+Implemented:
+
+- Audited model route decisions with provider/model selection, rejected candidates, route reasons, budget status, health status, and fallback plan.
+- Capability-aware routing for tools, vision, reasoning, streaming, long context, privacy, region, and cost class.
+- Durable `model_*` event stream and replay Model Timeline.
+- Usage ledger and budget warning/exceeded events.
+- Gateway `/model` command matrix.
+- Backward-compatible `selectModel` and old `model-smoke` path.
+
+Validation commands:
+
+- `npm run typecheck`
+- `npm run model:router-smoke`
+- `npm run model:capability-smoke`
+- `npm run model:fallback-smoke`
+- `npm run model:budget-smoke`
+- `npm run model:profile-smoke`
+
+Remaining non-blocking work:
+
+- Real provider probes, Web UI picker, provider-specific pricing/tokenization, and benchmark history.
