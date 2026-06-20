@@ -14,6 +14,9 @@ try {
   await smokeProtocol(core)
   await smokeRunStateMachine(core)
   await smokeStoreAndDurable(core, smokeRoot)
+  await smokeAgentKernelSubmitRun(core, resolve(smokeRoot, 'agent-submit'))
+  await smokeAgentKernelFailureCheckpoint(core, resolve(smokeRoot, 'agent-failed'))
+  await smokeAgentKernelInterruptedCheckpoint(core, resolve(smokeRoot, 'agent-interrupted'))
   await smokeLoopRuntime(core, smokeRoot)
   await smokeGuiRuntime(core, smokeRoot)
   await smokeGatewayRouter(core)
@@ -50,6 +53,7 @@ async function smokeRunStateMachine(core) {
     commandType: 'agent.run',
     workspaceId: 'default',
     threadId: 'thread_smoke',
+    runId: 'run_state_smoke',
     source: 'test',
     payload: { prompt: 'state smoke' },
   })
@@ -58,6 +62,8 @@ async function smokeRunStateMachine(core) {
   const completed = await stateMachine.completeRun(started.runId)
   assert(completed.status === 'completed', `expected completed, got ${completed.status}`)
   assert(events.some(event => event.eventType === 'run_start'), 'state machine should emit run_start')
+  assert(events.some(event => event.eventType === 'run_running'), 'state machine should emit run_running')
+  assert(events.filter(event => event.eventType === 'run_start' && event.runId === started.runId).length === 1, 'running must not emit duplicate run_start')
   assert(events.some(event => event.eventType === 'run_complete'), 'state machine should emit run_complete')
   let illegal = false
   try {
@@ -66,6 +72,19 @@ async function smokeRunStateMachine(core) {
     illegal = true
   }
   assert(illegal, 'completed run should reject illegal transition')
+
+  const interruptCommand = core.createCommandEnvelope({
+    commandType: 'agent.run',
+    workspaceId: 'default',
+    threadId: 'thread_smoke',
+    runId: 'run_state_interrupt_smoke',
+    source: 'test',
+    payload: { prompt: 'interrupt smoke' },
+  })
+  const interruptStarted = await stateMachine.startRun(interruptCommand)
+  await stateMachine.interruptRun(interruptStarted.runId)
+  assert(events.some(event => event.runId === interruptStarted.runId && event.eventType === 'run_interrupted'), 'interrupt should emit run_interrupted')
+  assert(!events.some(event => event.runId === interruptStarted.runId && event.eventType === 'run_failed'), 'interrupt must not emit run_failed')
 }
 
 async function smokeStoreAndDurable(core, workspaceRoot) {
@@ -107,11 +126,115 @@ async function smokeStoreAndDurable(core, workspaceRoot) {
   assert(durableEvents.some(event => event.eventType === 'heartbeat'), 'heartbeat should also write EventEnvelope')
 }
 
+async function smokeAgentKernelSubmitRun(core, workspaceRoot) {
+  await mkdir(workspaceRoot, { recursive: true })
+  const durable = new core.DurableRuntime({ workspaceRoot, workspaceId: 'default' })
+  const kernel = new core.AgentKernel({
+    cwd: workspaceRoot,
+    sessionId: 'kernel-submit-smoke',
+    workspaceId: 'default',
+    commandSource: 'test',
+    durable,
+    config: fakeModelConfig(),
+    fetch: fakeFetchReturning('kernel submit ok'),
+  })
+  const command = core.createCommandEnvelope({
+    commandType: 'agent.run',
+    workspaceId: 'default',
+    source: 'test',
+    payload: { prompt: 'submit run smoke' },
+  })
+  const result = await kernel.submitRun(command)
+  assert(result.runId, 'submitRun should return runId')
+  assert(result.finalText === 'kernel submit ok', `unexpected final text: ${result.finalText}`)
+  assert(result.output.finalText === result.finalText, 'submitRun should include QueryTurnOutput')
+  assert(Array.isArray(result.coreEvents) && result.coreEvents.length > 0, 'submitRun should return coreEvents')
+  assert(result.coreEvents.some(event => event.runId === result.runId && event.eventType === 'run_start'), 'core events should include run_start')
+  assert(result.coreEvents.some(event => event.runId === result.runId && event.eventType === 'run_running'), 'core events should include run_running')
+  assert(result.coreEvents.some(event => event.eventId.startsWith('event-') && event.runId === result.runId), 'EventBridge should convert legacy events with canonical runId')
+  assert(result.coreEvents.some(event => event.eventType === 'checkpoint'), 'checkpoint should be included in run coreEvents')
+  assert(result.checkpointId, 'submitRun should return checkpointId')
+
+  const ledger = core.RunLedger.fromRuntimePaths(durable.paths)
+  const ledgerRun = await ledger.readRun(result.runId)
+  assert(ledgerRun?.status === 'completed', `ledger should read completed run, got ${ledgerRun?.status}`)
+}
+
+async function smokeAgentKernelFailureCheckpoint(core, workspaceRoot) {
+  await mkdir(workspaceRoot, { recursive: true })
+  const durable = new core.DurableRuntime({ workspaceRoot, workspaceId: 'default' })
+  const kernel = new core.AgentKernel({
+    cwd: workspaceRoot,
+    sessionId: 'kernel-failed-smoke',
+    workspaceId: 'default',
+    commandSource: 'test',
+    durable,
+    config: fakeModelConfig(),
+    fetch: async () => {
+      throw new Error('fake model failure')
+    },
+  })
+  const command = core.createCommandEnvelope({
+    commandType: 'agent.run',
+    workspaceId: 'default',
+    runId: 'run_failed_checkpoint_smoke',
+    source: 'test',
+    payload: { prompt: 'failure smoke' },
+  })
+  let failed = false
+  try {
+    await kernel.submitRun(command)
+  } catch {
+    failed = true
+  }
+  assert(failed, 'failed AgentKernel run should throw')
+  const checkpoint = await durable.checkpointManager.readLatestCheckpoint({ runId: command.runId })
+  assert(checkpoint?.status === 'safe_to_replay', `failed checkpoint should be safe_to_replay, got ${checkpoint?.status}`)
+  assert(String(checkpoint?.payload?.errorPreview ?? '').includes('fake model failure'), 'failed checkpoint should include error preview')
+}
+
+async function smokeAgentKernelInterruptedCheckpoint(core, workspaceRoot) {
+  await mkdir(workspaceRoot, { recursive: true })
+  const durable = new core.DurableRuntime({ workspaceRoot, workspaceId: 'default' })
+  const kernel = new core.AgentKernel({
+    cwd: workspaceRoot,
+    sessionId: 'kernel-interrupted-smoke',
+    workspaceId: 'default',
+    commandSource: 'test',
+    durable,
+    config: fakeModelConfig(),
+    fetch: fakeFetchReturning('should not be called'),
+  })
+  const command = core.createCommandEnvelope({
+    commandType: 'agent.interrupt',
+    workspaceId: 'default',
+    runId: 'run_interrupted_checkpoint_smoke',
+    source: 'test',
+    payload: { reason: 'smoke_interrupt' },
+  })
+  const result = await kernel.submitRun(command)
+  assert(result.runId === command.runId, 'interrupt should preserve canonical runId')
+  const events = await durable.readEvents({ runId: command.runId })
+  assert(events.some(event => event.eventType === 'run_interrupted'), 'interrupted run should write run_interrupted event')
+  assert(!events.some(event => event.eventType === 'run_failed'), 'interrupted run must not write run_failed')
+  const checkpoint = await durable.checkpointManager.readLatestCheckpoint({ runId: command.runId })
+  assert(checkpoint?.status === 'unsafe_to_replay', `interrupted checkpoint should be unsafe_to_replay, got ${checkpoint?.status}`)
+}
+
 async function smokeLoopRuntime(core, workspaceRoot) {
   const mockAgent = {
-    async submit(command) {
+    async submitRun(command) {
       assert(command.commandType === 'agent.run', 'loop should submit through AgentKernel command')
-      return { finalText: 'mock loop run completed' }
+      assert(!command.runId, 'AttemptRunner should not generate runId itself')
+      return {
+        runId: 'run_loop_kernel_smoke',
+        finalText: 'mock loop run completed',
+        output: {
+          finalText: 'mock loop run completed',
+          toolResults: [],
+        },
+        coreEvents: [],
+      }
     },
   }
   const runtime = new core.LoopRuntime({
@@ -127,6 +250,7 @@ async function smokeLoopRuntime(core, workspaceRoot) {
   })
   assert(result.goal.status === 'completed', `expected completed goal, got ${result.goal.status}`)
   assert(result.attempt.status === 'completed', `expected completed attempt, got ${result.attempt.status}`)
+  assert(result.attempt.runId === 'run_loop_kernel_smoke', 'loop attempt should carry AgentKernel runId')
   assert(result.attempt.checkpointId, 'loop attempt should be checkpointed')
 }
 
@@ -193,4 +317,48 @@ function assertInside(rootPath, targetPath) {
 
 function assert(condition, message) {
   if (!condition) throw new Error(message)
+}
+
+function fakeModelConfig() {
+  return {
+    model: {
+      provider: 'fake-openai-compatible',
+      name: 'fake-model',
+    },
+    providers: {
+      'fake-openai-compatible': {
+        baseURL: 'https://example.invalid/v1',
+        model: 'fake-model',
+        protocol: 'openai-chat-completions',
+        auth: {
+          type: 'none',
+        },
+      },
+    },
+  }
+}
+
+function fakeFetchReturning(text) {
+  return async () => jsonResponse({
+    choices: [
+      {
+        message: {
+          role: 'assistant',
+          content: text,
+        },
+      },
+    ],
+    usage: {
+      total_tokens: 1,
+    },
+  })
+}
+
+function jsonResponse(body) {
+  return new Response(JSON.stringify(body), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
 }

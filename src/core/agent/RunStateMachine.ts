@@ -20,6 +20,9 @@ export type RunState = {
   threadId?: string
   goalId?: string
   loopId?: string
+  commandId: string
+  commandType: string
+  source: CommandEnvelope['source']
   status: RunStatus
   createdAtMs: number
   updatedAtMs: number
@@ -40,10 +43,14 @@ export class RunStateTransitionError extends Error {
 export class RunStateMachine {
   private readonly runs = new Map<string, RunState>()
 
-  constructor(private readonly emitEvent?: EventEnvelopeSink) {}
+  constructor(
+    private readonly emitEvent?: EventEnvelopeSink,
+    private readonly onStateChange?: (state: RunState) => void | Promise<void>,
+  ) {}
 
   async startRun(command: CommandEnvelope): Promise<RunState> {
-    const runId = command.runId ?? `run_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
+    if (!command.runId) throw new Error('RunStateMachine.startRun requires command.runId')
+    const runId = command.runId
     const now = Date.now()
     const state: RunState = {
       runId,
@@ -51,11 +58,20 @@ export class RunStateMachine {
       threadId: command.threadId,
       goalId: command.goalId,
       loopId: command.loopId,
+      commandId: command.commandId,
+      commandType: command.commandType,
+      source: command.source,
       status: 'created',
       createdAtMs: now,
       updatedAtMs: now,
     }
     this.runs.set(runId, state)
+    await this.onStateChange?.(state)
+    await this.emitRunEvent('run_created', state, {
+      commandId: command.commandId,
+      commandType: command.commandType,
+      source: command.source,
+    })
     await this.transition(runId, 'started', {
       commandId: command.commandId,
       commandType: command.commandType,
@@ -76,8 +92,8 @@ export class RunStateMachine {
     return this.requireRun(runId)
   }
 
-  async interruptRun(runId: string): Promise<RunState> {
-    await this.transition(runId, 'interrupted', { reason: 'interrupt_requested' })
+  async interruptRun(runId: string, reason = 'interrupt_requested'): Promise<RunState> {
+    await this.transition(runId, 'interrupted', { reason })
     return this.requireRun(runId)
   }
 
@@ -86,17 +102,30 @@ export class RunStateMachine {
     return this.requireRun(runId)
   }
 
-  async failRun(runId: string, error: unknown): Promise<RunState> {
+  async failRun(runId: string, error: unknown, payload: Record<string, unknown> = {}): Promise<RunState> {
     const message = error instanceof Error ? error.message : String(error)
-    await this.transition(runId, 'failed', { message })
+    await this.transition(runId, 'failed', { ...payload, message })
     const state = this.requireRun(runId)
     const next = { ...state, lastError: message }
     this.runs.set(runId, next)
+    await this.onStateChange?.(next)
     return next
   }
 
   readRun(runId: string): RunState | undefined {
     return this.runs.get(runId)
+  }
+
+  readActiveRuns(): RunState[] {
+    return [...this.runs.values()]
+      .filter(run => run.status === 'created' || run.status === 'started' || run.status === 'running' || run.status === 'waiting_approval')
+      .sort((left, right) => right.updatedAtMs - left.updatedAtMs)
+  }
+
+  readRecentRuns(limit = 20): RunState[] {
+    return [...this.runs.values()]
+      .sort((left, right) => right.updatedAtMs - left.updatedAtMs)
+      .slice(0, limit)
   }
 
   private async transition(runId: string, to: RunStatus, payload: Record<string, unknown>): Promise<void> {
@@ -107,15 +136,22 @@ export class RunStateMachine {
         current.status,
         to,
       )
-      await this.emitRunEvent('run_failed', current, { message: error.message, attemptedStatus: to })
+      await this.emitRunEvent('run_failed', current, {
+        message: error.message,
+        attemptedStatus: to,
+        fromStatus: current.status,
+        toStatus: to,
+      })
       throw error
     }
     const next = {
       ...current,
+      threadId: typeof payload.threadId === 'string' ? payload.threadId : current.threadId,
       status: to,
       updatedAtMs: Date.now(),
     }
     this.runs.set(runId, next)
+    await this.onStateChange?.(next)
     await this.emitRunEvent(eventTypeForStatus(to), next, payload)
   }
 
@@ -130,6 +166,9 @@ export class RunStateMachine {
       loopId: state.loopId,
       payload: {
         status: state.status,
+        commandId: state.commandId,
+        commandType: state.commandType,
+        source: state.source,
         ...payload,
       },
     })
@@ -160,8 +199,9 @@ function isAllowedTransition(from: RunStatus, to: RunStatus): boolean {
 function eventTypeForStatus(status: RunStatus): EventEnvelope['eventType'] {
   switch (status) {
     case 'started':
-    case 'running':
       return 'run_start'
+    case 'running':
+      return 'run_running'
     case 'completed':
       return 'run_complete'
     case 'failed':
@@ -169,8 +209,8 @@ function eventTypeForStatus(status: RunStatus): EventEnvelope['eventType'] {
     case 'waiting_approval':
       return 'approval'
     case 'interrupted':
-      return 'run_failed'
+      return 'run_interrupted'
     case 'created':
-      return 'run_start'
+      return 'run_created'
   }
 }

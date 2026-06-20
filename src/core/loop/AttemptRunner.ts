@@ -3,7 +3,7 @@ import type { AgentKernel } from '../agent/index.js'
 import type { Attempt, Task } from './LoopTypes.js'
 
 export class AttemptRunner {
-  constructor(private readonly agentKernel: Pick<AgentKernel, 'submit'>) {}
+  constructor(private readonly agentKernel: Pick<AgentKernel, 'submitRun'>) {}
 
   async run(input: {
     workspaceId: string
@@ -30,13 +30,13 @@ export class AttemptRunner {
         ].join('\n'),
       },
     })
-    const output = await this.agentKernel.submit(command)
+    const result = await this.agentKernel.submitRun(command)
     return {
       ...attempt,
-      runId: command.runId,
+      runId: result.runId,
       status: 'completed',
       completedAtMs: Date.now(),
-      summary: output.finalText.slice(0, 500),
+      summary: result.finalText.slice(0, 500),
     }
   }
 }

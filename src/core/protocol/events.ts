@@ -2,9 +2,12 @@ import type { AgentEvent } from '../../services/events/index.js'
 import { createProtocolId } from './commands.js'
 
 export type KernelEventType =
+  | 'run_created'
   | 'run_start'
+  | 'run_running'
   | 'run_complete'
   | 'run_failed'
+  | 'run_interrupted'
   | 'tool_call'
   | 'approval'
   | 'model_request'
@@ -125,24 +128,29 @@ export function agentEventToEnvelope(
   event: AgentEvent,
   input: {
     workspaceId: string
+    threadId?: string
+    runId?: string
+    goalId?: string
+    loopId?: string
     seq?: number
     sequencer?: EventSequencer
   },
-): EventEnvelope<AgentEvent> {
+): EventEnvelope<AgentEvent & { legacyRunId?: string }> {
+  const legacyRunId = eventRunId(event)
   return createEventEnvelope(
     {
       eventId: event.id,
       seq: input.seq,
       eventType: legacyEventType(event.type),
       workspaceId: input.workspaceId,
-      threadId: eventThreadId(event),
-      runId: eventRunId(event),
-      goalId: event.goalId,
-      loopId: eventLoopId(event),
+      threadId: input.threadId ?? eventThreadId(event),
+      runId: input.runId ?? legacyRunId,
+      goalId: input.goalId ?? event.goalId,
+      loopId: input.loopId ?? eventLoopId(event),
       taskId: eventTaskId(event),
       toolCallId: eventToolCallId(event),
       createdAtMs: event.createdAtMs,
-      payload: event,
+      payload: legacyRunId ? { ...event, legacyRunId } : event,
     },
     input.sequencer,
   )

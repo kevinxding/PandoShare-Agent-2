@@ -59,3 +59,12 @@ Adapter markers:
 - `DingxuGuiAdapter` wraps `src/services/gui`.
 
 New core code should not import Web, CLI, or server modules.
+
+## Agent Run Identity Rule
+
+- `AgentKernel` is the only authority that may generate or accept canonical Agent run identity.
+- `CommandEnvelope.runId` must be normalized by `AgentKernel` before execution reaches `RunStateMachine`.
+- `QueryEngine` is a legacy executor and must only be directly called by `AgentKernelAdapter` in runtime code.
+- `LoopRuntime`, Gateway, Web, and CLI must not generate Agent run state.
+- Loop attempts must read `runId` from `AgentKernelRunResult.runId`, not from their original command object.
+- Legacy `QueryEngine` run ids may be preserved as `payload.legacyRunId` in bridged events, but they must not replace the canonical top-level `EventEnvelope.runId`.
