@@ -1,0 +1,38 @@
+{
+  "id": "loop/goal-with-verifier",
+  "category": "loop",
+  "title": "Complete a goal with verifier evidence",
+  "description": "Offline fixture for the goal loop contract: plan, attempt, verify, complete.",
+  "task": "Run a bounded goal loop and require verifier evidence before completion.",
+  "input": {
+    "goal": "Create a small acceptance report",
+    "verifier": "Check that the report names changed files and tests."
+  },
+  "output": {
+    "events": ["goal_created", "task_created", "attempt_started", "verifier_passed", "goal_completed"],
+    "iterations": 2,
+    "finalStatus": "completed",
+    "evidence": "Verifier found changed files and tests in the report."
+  },
+  "expectations": [
+    {
+      "name": "verifier event is emitted",
+      "path": "output.events",
+      "operator": "array_contains",
+      "value": "verifier_passed"
+    },
+    {
+      "name": "goal completes",
+      "path": "output.finalStatus",
+      "operator": "equals",
+      "value": "completed"
+    },
+    {
+      "name": "loop made progress",
+      "path": "output.iterations",
+      "operator": "numeric_gte",
+      "value": 1
+    }
+  ],
+  "tags": ["loop", "verifier"]
+}

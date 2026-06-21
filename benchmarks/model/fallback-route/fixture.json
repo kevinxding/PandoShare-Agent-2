@@ -1,0 +1,44 @@
+{
+  "id": "model/fallback-route",
+  "category": "model",
+  "title": "Select fallback route after rate limit",
+  "description": "Offline fixture for model routing fallback when a preferred provider is rate limited.",
+  "task": "Route a code task away from a rate-limited preferred provider.",
+  "input": {
+    "taskType": "code",
+    "preferredProvider": "cheap",
+    "health": {
+      "cheap": "rate_limited",
+      "vision": "healthy"
+    }
+  },
+  "output": {
+    "selectedProviderId": "vision",
+    "selectedModelId": "vision-model",
+    "rejectedReasons": {
+      "cheap": ["health_rate_limited"]
+    },
+    "events": ["model_route_selected", "model_fallback_selected"]
+  },
+  "expectations": [
+    {
+      "name": "fallback provider is selected",
+      "path": "output.selectedProviderId",
+      "operator": "equals",
+      "value": "vision"
+    },
+    {
+      "name": "preferred provider rejection is classified",
+      "path": "output.rejectedReasons.cheap",
+      "operator": "array_contains",
+      "value": "health_rate_limited"
+    },
+    {
+      "name": "fallback event is emitted",
+      "path": "output.events",
+      "operator": "array_contains",
+      "value": "model_fallback_selected"
+    }
+  ],
+  "tags": ["model", "fallback"]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "code/readme-update",
+  "category": "code",
+  "title": "Update README usage notes",
+  "description": "Offline fixture for a small documentation update with no speculative TODO text.",
+  "task": "Add a concise README usage section for running a local agent turn.",
+  "input": {
+    "files": {
+      "README.md": "# PandoShare Agent\n\nLocal agent runtime skeleton.\n"
+    }
+  },
+  "output": {
+    "markdown": "# PandoShare Agent\n\nLocal agent runtime skeleton.\n\n## Usage\n\nRun one local turn with `pando run --prompt \"inspect workspace\"` after building the project.\n",
+    "changedFiles": ["README.md"],
+    "tests": ["docs-review"]
+  },
+  "expectations": [
+    {
+      "name": "usage heading is present",
+      "path": "output.markdown",
+      "operator": "contains",
+      "value": "## Usage"
+    },
+    {
+      "name": "command example is present",
+      "path": "output.markdown",
+      "operator": "contains",
+      "value": "pando run"
+    },
+    {
+      "name": "no TODO placeholder remains",
+      "path": "output.markdown",
+      "operator": "not_contains",
+      "value": "TODO"
+    }
+  ],
+  "tags": ["code", "docs"]
+}

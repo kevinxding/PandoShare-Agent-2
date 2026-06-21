@@ -1,0 +1,37 @@
+{
+  "id": "replay/duplicate-terminal-incident",
+  "category": "replay",
+  "title": "Detect duplicate terminal replay incident",
+  "description": "Offline fixture for replay incident detection and safe redaction expectations.",
+  "task": "Build a replay report for a run with duplicate terminal events.",
+  "input": {
+    "events": ["run_start", "run_complete", "run_complete", "model_request_started"],
+    "secretSample": "sk-test-secret"
+  },
+  "output": {
+    "incidents": ["duplicate_terminal_event", "payload_secret_suspected"],
+    "redacted": true,
+    "recommendations": ["inspect_run", "export_bundle"]
+  },
+  "expectations": [
+    {
+      "name": "duplicate terminal incident is reported",
+      "path": "output.incidents",
+      "operator": "array_contains",
+      "value": "duplicate_terminal_event"
+    },
+    {
+      "name": "secret payload is redacted",
+      "path": "output.redacted",
+      "operator": "equals",
+      "value": true
+    },
+    {
+      "name": "operator can inspect run",
+      "path": "output.recommendations",
+      "operator": "array_contains",
+      "value": "inspect_run"
+    }
+  ],
+  "tags": ["replay", "incident"]
+}

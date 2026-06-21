@@ -1,0 +1,19 @@
+﻿{
+  "id": "readme-update",
+  "title": "Update project README",
+  "description": "Write a concise README section and verify the expected marker exists.",
+  "files": [
+    { "path": "README.md", "content": "# Demo\n\nTODO\n" },
+    { "path": "check.mjs", "content": "import { readFileSync } from 'node:fs'\nconst text = readFileSync('README.md', 'utf8')\nif (!text.includes('## Usage')) throw new Error('missing usage')\n" },
+    { "path": "package.json", "content": "{\"type\":\"module\"}\n" }
+  ],
+  "operations": [
+    { "type": "write", "path": "README.md", "content": "# Demo\n\n## Usage\n\nRun the smoke test with node.\n" }
+  ],
+  "verifier": {
+    "commands": [{ "command": "node", "args": ["check.mjs"], "timeoutMs": 5000 }],
+    "changedFiles": ["README.md"],
+    "mustContain": [{ "path": "README.md", "text": "## Usage" }]
+  },
+  "tags": ["docs", "write"]
+}

@@ -1,0 +1,19 @@
+﻿{
+  "id": "simple-ts-bug",
+  "title": "Fix a simple arithmetic bug",
+  "description": "Patch a small implementation and verify it with a local node test.",
+  "files": [
+    { "path": "src/math.js", "content": "export function add(a, b) {\n  return a - b\n}\n" },
+    { "path": "check.mjs", "content": "import { add } from './src/math.js'\nif (add(2, 3) !== 5) throw new Error('add failed')\n" },
+    { "path": "package.json", "content": "{\"type\":\"module\"}\n" }
+  ],
+  "operations": [
+    { "type": "patch", "path": "src/math.js", "search": "return a - b", "replace": "return a + b" }
+  ],
+  "verifier": {
+    "commands": [{ "command": "node", "args": ["check.mjs"], "timeoutMs": 5000 }],
+    "changedFiles": ["src/math.js"],
+    "mustContain": [{ "path": "src/math.js", "text": "return a + b" }]
+  },
+  "tags": ["code", "patch"]
+}

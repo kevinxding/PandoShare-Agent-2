@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "name": "PandoShare Agent Offline Benchmark Pack",
+  "description": "Deterministic offline fixtures for productization smoke evaluation.",
+  "benchmarks": [
+    {
+      "id": "code/simple-ts-bug",
+      "category": "code",
+      "title": "Fix a simple TypeScript arithmetic bug",
+      "fixture": "code/simple-ts-bug/fixture.json",
+      "tags": ["offline", "code"],
+      "offline": true
+    },
+    {
+      "id": "code/readme-update",
+      "category": "code",
+      "title": "Update README usage notes",
+      "fixture": "code/readme-update/fixture.json",
+      "tags": ["offline", "docs"],
+      "offline": true
+    },
+    {
+      "id": "loop/goal-with-verifier",
+      "category": "loop",
+      "title": "Complete a goal with verifier evidence",
+      "fixture": "loop/goal-with-verifier/fixture.json",
+      "tags": ["offline", "loop"],
+      "offline": true
+    },
+    {
+      "id": "gateway/goal-command-flow",
+      "category": "gateway",
+      "title": "Route a gateway goal command",
+      "fixture": "gateway/goal-command-flow/fixture.json",
+      "tags": ["offline", "gateway"],
+      "offline": true
+    },
+    {
+      "id": "gui/mock-click-approval",
+      "category": "gui",
+      "title": "Mock GUI click approval flow",
+      "fixture": "gui/mock-click-approval/fixture.json",
+      "tags": ["offline", "gui"],
+      "offline": true
+    },
+    {
+      "id": "replay/duplicate-terminal-incident",
+      "category": "replay",
+      "title": "Detect duplicate terminal replay incident",
+      "fixture": "replay/duplicate-terminal-incident/fixture.json",
+      "tags": ["offline", "replay"],
+      "offline": true
+    },
+    {
+      "id": "model/fallback-route",
+      "category": "model",
+      "title": "Select fallback route after rate limit",
+      "fixture": "model/fallback-route/fixture.json",
+      "tags": ["offline", "model"],
+      "offline": true
+    }
+  ]
+}

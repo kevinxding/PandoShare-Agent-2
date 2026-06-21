@@ -1,0 +1,37 @@
+{
+  "id": "gateway/goal-command-flow",
+  "category": "gateway",
+  "title": "Route a gateway goal command",
+  "description": "Offline fixture for converting a gateway /goal command into loop work and outbound acknowledgement.",
+  "task": "Route '/goal summarize this repository' through the gateway command flow.",
+  "input": {
+    "channel": "local",
+    "text": "/goal summarize this repository"
+  },
+  "output": {
+    "commands": ["gateway_inbound_received", "gateway_command_created", "loop_goal_created", "gateway_outbound_delivered"],
+    "commandType": "loop.create",
+    "replyText": "goal accepted: summarize this repository"
+  },
+  "expectations": [
+    {
+      "name": "gateway creates loop command",
+      "path": "output.commandType",
+      "operator": "equals",
+      "value": "loop.create"
+    },
+    {
+      "name": "loop goal event is present",
+      "path": "output.commands",
+      "operator": "array_contains",
+      "value": "loop_goal_created"
+    },
+    {
+      "name": "acknowledgement is delivered",
+      "path": "output.replyText",
+      "operator": "contains",
+      "value": "goal accepted"
+    }
+  ],
+  "tags": ["gateway", "loop"]
+}

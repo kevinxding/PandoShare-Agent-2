@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 import { spawn } from 'node:child_process'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { relative, resolve } from 'node:path'
@@ -61,7 +61,29 @@ function acceptanceSteps() {
     npmStep('reality-package', 'reality:package'),
     npmStep('reality-docs', 'reality:docs'),
     npmStep('reality-dist', 'reality:dist'),
-    npmStep('kernel-smoke', 'kernel:smoke'),
+    npmStep('backend-service-smoke', 'backend:service-smoke'),
+    npmStep('backend-contract-smoke', 'backend:contract-smoke'),
+    npmStep('tool-runtime-smoke', 'tool-runtime:smoke'),
+    npmStep('code-agent-harness-smoke', 'code-agent:harness-smoke'),
+    npmStep('code-agent-fixture-smoke', 'code-agent:fixture-smoke'),
+    npmStep('patch-verifier-smoke', 'patch-verifier:smoke'),
+    npmStep('benchmark-smoke', 'benchmark:smoke'),
+    npmStep('benchmark-code-smoke', 'benchmark:code-smoke'),
+    npmStep('benchmark-loop-smoke', 'benchmark:loop-smoke'),
+    npmStep('benchmark-gateway-smoke', 'benchmark:gateway-smoke'),
+    npmStep('benchmark-gui-smoke', 'benchmark:gui-smoke'),
+    npmStep('benchmark-report-smoke', 'benchmark:report-smoke'),
+    npmStep('context-runtime-smoke', 'context:runtime-smoke'),
+    npmStep('context-evidence-smoke', 'context:evidence-smoke'),
+    npmStep('memory-smoke', 'memory:smoke'),
+    npmStep('compaction-runtime-smoke', 'compaction:runtime-smoke'),
+    npmStep('context-budget-smoke', 'context:budget-smoke'),
+    npmStep('worktree-smoke', 'worktree:smoke'),
+    npmStep('sandbox-policy-smoke', 'sandbox:policy-smoke'),
+    npmStep('permission-profile-smoke', 'permission:profile-smoke'),
+    npmStep('path-policy-smoke', 'path-policy:smoke'),
+    npmStep('command-policy-smoke', 'command-policy:smoke'),
+    npmStep('productization-phase-smoke', 'productization:phase-smoke'),    npmStep('kernel-smoke', 'kernel:smoke'),
     npmStep('durable-smoke', 'durable:smoke'),
     npmStep('durable-hardening-smoke', 'durable:hardening-smoke'),
     npmStep('loop-core-smoke', 'loop:core-smoke'),
@@ -280,3 +302,4 @@ function assertInside(rootPath, targetPath) {
 
 assertInside(root, reportPath)
 assertInside(root, summaryPath)
+

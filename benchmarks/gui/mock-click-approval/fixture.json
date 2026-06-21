@@ -1,0 +1,38 @@
+{
+  "id": "gui/mock-click-approval",
+  "category": "gui",
+  "title": "Mock GUI click approval flow",
+  "description": "Offline fixture for a GUI click that must request approval before action.",
+  "task": "Click a mock approve button only after approval is granted.",
+  "input": {
+    "surface": "mock-browser",
+    "target": "approve-button",
+    "requiresApproval": true
+  },
+  "output": {
+    "actions": ["observe", "request_approval", "click", "verify"],
+    "approvals": ["approved"],
+    "screenshotRef": "mock://screenshots/approve-button-after-click.png",
+    "finalState": "clicked"
+  },
+  "expectations": [
+    {
+      "name": "approval was requested",
+      "path": "output.actions",
+      "operator": "array_contains",
+      "value": "request_approval"
+    },
+    {
+      "name": "approval was granted",
+      "path": "output.approvals",
+      "operator": "array_contains",
+      "value": "approved"
+    },
+    {
+      "name": "verification screenshot exists",
+      "path": "output.screenshotRef",
+      "operator": "exists"
+    }
+  ],
+  "tags": ["gui", "approval"]
+}

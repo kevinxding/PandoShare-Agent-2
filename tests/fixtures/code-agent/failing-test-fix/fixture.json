@@ -1,0 +1,19 @@
+﻿{
+  "id": "failing-test-fix",
+  "title": "Fix a failing text formatter test",
+  "description": "Patch a formatter implementation while preserving the test harness.",
+  "files": [
+    { "path": "src/format.js", "content": "export function title(text) {\n  return text.toLowerCase()\n}\n" },
+    { "path": "test.mjs", "content": "import { title } from './src/format.js'\nif (title('pando share') !== 'Pando Share') throw new Error('title failed')\n" },
+    { "path": "package.json", "content": "{\"type\":\"module\"}\n" }
+  ],
+  "operations": [
+    { "type": "patch", "path": "src/format.js", "search": "return text.toLowerCase()", "replace": "return text.split(' ').map(part => part.slice(0, 1).toUpperCase() + part.slice(1)).join(' ')" }
+  ],
+  "verifier": {
+    "commands": [{ "command": "node", "args": ["test.mjs"], "timeoutMs": 5000 }],
+    "changedFiles": ["src/format.js"],
+    "mustContain": [{ "path": "src/format.js", "text": "toUpperCase" }]
+  },
+  "tags": ["code", "test"]
+}

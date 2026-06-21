@@ -1,0 +1,39 @@
+{
+  "id": "code/simple-ts-bug",
+  "category": "code",
+  "title": "Fix a simple TypeScript arithmetic bug",
+  "description": "Offline fixture for a narrow code repair with typecheck and unit evidence.",
+  "task": "Fix add(a, b) so it returns the sum and keep the change surgical.",
+  "input": {
+    "files": {
+      "src/math.ts": "export function add(a: number, b: number): number { return a - b }",
+      "src/math.test.ts": "assert.equal(add(2, 3), 5)"
+    }
+  },
+  "output": {
+    "patch": "--- a/src/math.ts\n+++ b/src/math.ts\n@@\n-export function add(a: number, b: number): number { return a - b }\n+export function add(a: number, b: number): number { return a + b }\n",
+    "tests": ["typecheck", "unit:add"],
+    "risk": "low"
+  },
+  "expectations": [
+    {
+      "name": "patch changes subtraction to addition",
+      "path": "output.patch",
+      "operator": "contains",
+      "value": "return a + b"
+    },
+    {
+      "name": "typecheck evidence is present",
+      "path": "output.tests",
+      "operator": "array_contains",
+      "value": "typecheck"
+    },
+    {
+      "name": "risk stays low",
+      "path": "output.risk",
+      "operator": "equals",
+      "value": "low"
+    }
+  ],
+  "tags": ["code", "repair", "typescript"]
+}
