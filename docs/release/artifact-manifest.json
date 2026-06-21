@@ -1,0 +1,14 @@
+{
+  "generatedAtMs": 1782031468445,
+  "artifacts": [
+    "docs/kernel/generated-acceptance-report.md",
+    "docs/security/security-acceptance-report.md",
+    "docs/release/generated-release-notes.md"
+  ],
+  "excluded": [
+    "node_modules",
+    "dist cache",
+    ".pandoshare",
+    ".tmp"
+  ]
+}

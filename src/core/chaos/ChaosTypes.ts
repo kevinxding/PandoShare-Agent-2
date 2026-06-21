@@ -1,0 +1,4 @@
+export type ChaosScenarioId = 'daemon_tick' | 'gateway_inbound_duplicate' | 'gateway_outbound_retry' | 'model_rate_limit_simulated' | 'gui_stuck_mock' | 'durable_corrupt_jsonl' | 'stale_heartbeat' | 'replay_incident' | 'loop_recovery_requires_human' | 'tool_timeout' | 'memory_growth_sample' | 'process_restart_marker'
+export type ChaosRunnerOptions = { durationMs?: number; intervalMs?: number; seed?: number; workspaceRoot: string; maxIterations?: number; now?: () => number }
+export type ChaosScenarioResult = { scenarioId: ChaosScenarioId; status: 'recovered' | 'nonfatal' | 'fatal'; message: string; metrics: Record<string, number | string | boolean> }
+export type ChaosRunReport = { runId: string; startedAtMs: number; completedAtMs: number; durationMs: number; iterations: number; events: number; failures: number; recoveries: number; incidents: number; memoryRss: number; results: ChaosScenarioResult[] }

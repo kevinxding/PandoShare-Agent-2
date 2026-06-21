@@ -1,0 +1,5 @@
+{
+  "status": "baseline",
+  "blocker": "Full clean install is documented but not executed by default to avoid network/package-registry dependency in local smoke.",
+  "safeCommand": "npm ci && npm run build && node bin/pando.js --help"
+}

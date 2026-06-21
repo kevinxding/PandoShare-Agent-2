@@ -1,0 +1,9 @@
+{
+  "package": "pandoshare-agent",
+  "version": "0.1.0",
+  "private": true,
+  "publishable": false,
+  "blockers": [
+    "not publishable until owner changes private flag"
+  ]
+}

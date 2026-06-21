@@ -1,0 +1,65 @@
+{
+  "runId": "chaos_mqnjkc58",
+  "startedAtMs": 1782031534460,
+  "completedAtMs": 1782031534461,
+  "durationMs": 1,
+  "iterations": 6,
+  "events": 6,
+  "failures": 1,
+  "recoveries": 5,
+  "incidents": 0,
+  "memoryRss": 69865472,
+  "results": [
+    {
+      "scenarioId": "daemon_tick",
+      "status": "recovered",
+      "message": "Scenario completed with baseline recovery evidence.",
+      "metrics": {
+        "iteration": 0
+      }
+    },
+    {
+      "scenarioId": "gateway_inbound_duplicate",
+      "status": "recovered",
+      "message": "Duplicate inbound did not dispatch twice.",
+      "metrics": {
+        "duplicate": true,
+        "dispatchCount": 1
+      }
+    },
+    {
+      "scenarioId": "gateway_outbound_retry",
+      "status": "recovered",
+      "message": "Scenario completed with baseline recovery evidence.",
+      "metrics": {
+        "iteration": 2
+      }
+    },
+    {
+      "scenarioId": "model_rate_limit_simulated",
+      "status": "recovered",
+      "message": "Rate limit produced fallback evidence.",
+      "metrics": {
+        "fallbackUsed": true,
+        "retryAfterMs": 1000
+      }
+    },
+    {
+      "scenarioId": "gui_stuck_mock",
+      "status": "recovered",
+      "message": "Mock stuck GUI produced release evidence.",
+      "metrics": {
+        "releasedInput": true
+      }
+    },
+    {
+      "scenarioId": "durable_corrupt_jsonl",
+      "status": "nonfatal",
+      "message": "Corrupt JSONL was classified and skipped.",
+      "metrics": {
+        "corruptRecords": 1,
+        "recovered": true
+      }
+    }
+  ]
+}

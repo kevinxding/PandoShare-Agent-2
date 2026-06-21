@@ -8,6 +8,7 @@ import { platform } from 'node:os'
 import { AgentKernel } from '../core/agent/index.js'
 import { DurableRuntime } from '../core/durable/index.js'
 import { ReplayService, type ReplayQuery } from '../core/replay/index.js'
+import { MissionControlService } from '../core/mission-control/index.js'
 import { GatewayDaemon } from '../core/gateway/index.js'
 import {
   LocalApprovalStore,
@@ -196,6 +197,11 @@ async function handleApiRequest(
   url: URL,
 ): Promise<void> {
   const method = request.method ?? 'GET'
+
+  if (url.pathname.startsWith('/api/mission-control')) {
+    await handleMissionControlRequest(request, response, runtime, url)
+    return
+  }
 
   const replayRunMatch = url.pathname.match(/^\/api\/replay\/run\/([A-Za-z0-9_-]+)$/)
   if (method === 'GET' && replayRunMatch) {
@@ -517,6 +523,83 @@ async function handleApiRequest(
   }
 
   sendJson(response, 404, { ok: false, error: `Unknown API route: ${method} ${url.pathname}` })
+}
+
+async function handleMissionControlRequest(
+  request: IncomingMessage,
+  response: ServerResponse,
+  runtime: ServerRuntime,
+  url: URL,
+): Promise<void> {
+  const method = request.method ?? 'GET'
+  const service = new MissionControlService({ workspaceRoot: runtime.cwd, cwd: runtime.cwd, sessionId: 'server-mission-control' })
+  try {
+    if (method === 'GET' && url.pathname === '/api/mission-control/overview') {
+      sendJson(response, 200, service.getOverview())
+      return
+    }
+    if (method === 'GET' && url.pathname === '/api/mission-control/active') {
+      sendJson(response, 200, service.getActiveWork())
+      return
+    }
+    if (method === 'GET' && url.pathname === '/api/mission-control/health') {
+      sendJson(response, 200, service.getRuntimeHealth())
+      return
+    }
+    if (method === 'GET' && url.pathname === '/api/mission-control/runs') {
+      sendJson(response, 200, service.getRuns(queryFromUrl(url)))
+      return
+    }
+    if (method === 'GET' && url.pathname === '/api/mission-control/loops') {
+      sendJson(response, 200, service.getLoops(queryFromUrl(url)))
+      return
+    }
+    if (method === 'GET' && url.pathname === '/api/mission-control/gateway') {
+      sendJson(response, 200, service.getGatewayStatus())
+      return
+    }
+    if (method === 'GET' && url.pathname === '/api/mission-control/gui') {
+      sendJson(response, 200, service.getGuiStatus())
+      return
+    }
+    if (method === 'GET' && url.pathname === '/api/mission-control/models') {
+      sendJson(response, 200, service.getModelStatus())
+      return
+    }
+    if (method === 'GET' && url.pathname === '/api/mission-control/replay') {
+      sendJson(response, 200, service.getReplaySummary(queryFromUrl(url)))
+      return
+    }
+    if (method === 'GET' && url.pathname === '/api/mission-control/approvals') {
+      sendJson(response, 200, service.getApprovals(queryFromUrl(url)))
+      return
+    }
+    if (method === 'GET' && url.pathname === '/api/mission-control/events') {
+      sendJson(response, 200, service.getEvents(queryFromUrl(url)))
+      return
+    }
+    if (method === 'POST' && url.pathname === '/api/mission-control/action') {
+      const body = await readJsonBody(request)
+      const action = typeof body.action === 'string' ? body.action : ''
+      const payload = isRecord(body.payload) ? body.payload : {}
+      const requestId = typeof body.requestId === 'string' ? body.requestId : undefined
+      sendJson(response, 200, await service.runAction({ action, payload, requestId }))
+      return
+    }
+    sendJson(response, 404, { ok: false, error: 'Unknown Mission Control route: ' + method + ' ' + url.pathname })
+  } catch (error) {
+    sendJson(response, 400, { ok: false, error: errorMessage(error) })
+  }
+}
+
+function queryFromUrl(url: URL): { limit?: number; status?: string } {
+  const limitValue = url.searchParams.get('limit')
+  const limit = limitValue ? Number(limitValue) : undefined
+  const status = url.searchParams.get('status') ?? undefined
+  return {
+    limit: Number.isFinite(limit) && limit !== undefined ? limit : undefined,
+    status,
+  }
 }
 
 async function handleReplayRequest(

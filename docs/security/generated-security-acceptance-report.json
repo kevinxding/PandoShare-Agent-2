@@ -1,0 +1,315 @@
+{
+  "ok": false,
+  "generatedAtMs": 1782031533776,
+  "secretScan": {
+    "scannedFiles": 648,
+    "findingCount": 42,
+    "findings": [
+      {
+        "file": "src/core/gateway-daemon-service/GatewayWebhookServer.ts",
+        "line": 107,
+        "kind": "webhook_secret",
+        "preview": "    const secret = [REDACTED]"
+      },
+      {
+        "file": "src/core/gateway-daemon-service/GatewayWebhookServer.ts",
+        "line": 110,
+        "kind": "webhook_secret",
+        "preview": "    const authorization = [REDACTED]"
+      },
+      {
+        "file": "src/services/gatewayRuntime/index.ts",
+        "line": 1882,
+        "kind": "webhook_secret",
+        "preview": "    const token = [REDACTED] ? runtimeEnv(channel.tokenEnv) : undefined"
+      },
+      {
+        "file": "src/services/llm/auth.ts",
+        "line": 30,
+        "kind": "webhook_secret",
+        "preview": "  const token = [REDACTED] || readEnv(auth.envKeys).value"
+      },
+      {
+        "file": "src/services/llm/codexAuth.ts",
+        "line": 28,
+        "kind": "webhook_secret",
+        "preview": "  const token = [REDACTED] ?? CODEX_ACCESS_TOKEN_ENV_KEYS)"
+      },
+      {
+        "file": "src/services/llm/providers.ts",
+        "line": 145,
+        "kind": "webhook_secret",
+        "preview": "      token: [REDACTED]"
+      },
+      {
+        "file": "scripts/compact-smoke.mjs",
+        "line": 63,
+        "kind": "api_key",
+        "preview": "      assert(!requestText.includes('[REDACTED_API_KEY]'), 'compact request should redact sk-style secrets')"
+      },
+      {
+        "file": "scripts/durable-smoke.mjs",
+        "line": 31,
+        "kind": "api_key",
+        "preview": "    payload: { ok: true, apiKey: [REDACTED]' },"
+      },
+      {
+        "file": "scripts/durable-smoke.mjs",
+        "line": 31,
+        "kind": "webhook_secret",
+        "preview": "    payload: { ok: true, apiKey: [REDACTED]' },"
+      },
+      {
+        "file": "scripts/event-protocol-smoke.mjs",
+        "line": 86,
+        "kind": "webhook_secret",
+        "preview": "    [{ id: 'call_external_probe', name: 'external_probe', input: { token: [REDACTED]' } }],"
+      },
+      {
+        "file": "scripts/gateway-smoke.mjs",
+        "line": 825,
+        "kind": "webhook_secret",
+        "preview": "        token: [REDACTED]',"
+      },
+      {
+        "file": "scripts/loop-skill-candidate-smoke.mjs",
+        "line": 18,
+        "kind": "api_key",
+        "preview": "    trigger: 'When Loop Engineering sees api_key=[REDACTED_API_KEY] in verifier notes.',"
+      },
+      {
+        "file": "scripts/mission-control-action-smoke.mjs",
+        "line": 4,
+        "kind": "api_key",
+        "preview": "const health = await service.runAction({ action: 'system.health', payload: { token: [REDACTED]' } })"
+      },
+      {
+        "file": "scripts/mission-control-action-smoke.mjs",
+        "line": 4,
+        "kind": "webhook_secret",
+        "preview": "const health = await service.runAction({ action: 'system.health', payload: { token: [REDACTED]' } })"
+      },
+      {
+        "file": "scripts/mission-control-action-smoke.mjs",
+        "line": 8,
+        "kind": "api_key",
+        "preview": "assert(!JSON.stringify(health).includes('[REDACTED_API_KEY]'), 'action response must redact secret payload')"
+      },
+      {
+        "file": "scripts/mission-control-api-smoke.mjs",
+        "line": 10,
+        "kind": "bearer_token",
+        "preview": "  const action = await postJson(server.url + '/api/mission-control/action', { action: 'system.health', payload: { authorization: [REDACTED] [REDACTED]' } })"
+      },
+      {
+        "file": "scripts/model-probe-report-smoke.mjs",
+        "line": 23,
+        "kind": "api_key",
+        "preview": "  assert(!json.includes('[REDACTED_API_KEY]'), 'json report must not contain secret values')"
+      },
+      {
+        "file": "scripts/model-probe-report-smoke.mjs",
+        "line": 24,
+        "kind": "api_key",
+        "preview": "  assert(!markdown.includes('[REDACTED_API_KEY]'), 'markdown report must not contain secret values')"
+      },
+      {
+        "file": "scripts/model-probe-smoke.mjs",
+        "line": 10,
+        "kind": "api_key",
+        "preview": "const secret = [REDACTED]'"
+      },
+      {
+        "file": "scripts/model-probe-smoke.mjs",
+        "line": 10,
+        "kind": "webhook_secret",
+        "preview": "const secret = [REDACTED]'"
+      },
+      {
+        "file": "scripts/productization-smoke-lib.mjs",
+        "line": 153,
+        "kind": "api_key",
+        "preview": "  const evidence = core.createEvidencePack({ title: 'Model trace', refs: [{ kind: 'model', ref: 'route_1' }], summary: 'token: [REDACTED]', reason: 'smoke' })"
+      },
+      {
+        "file": "scripts/productization-smoke-lib.mjs",
+        "line": 153,
+        "kind": "webhook_secret",
+        "preview": "  const evidence = core.createEvidencePack({ title: 'Model trace', refs: [{ kind: 'model', ref: 'route_1' }], summary: 'token: [REDACTED]', reason: 'smoke' })"
+      },
+      {
+        "file": "scripts/productization-smoke-lib.mjs",
+        "line": 160,
+        "kind": "api_key",
+        "preview": "  await store.append({ scope: 'project', source: 'smoke', content: 'api_key=[REDACTED_API_KEY]', tags: ['smoke'] })"
+      },
+      {
+        "file": "scripts/replay-api-smoke.mjs",
+        "line": 15,
+        "kind": "api_key",
+        "preview": "  await durable.appendEvent({ eventType: 'run_start', workspaceId: 'default', runId: 'run_api_smoke', payload: { status: 'running', apiKey: [REDACTED]' } })"
+      },
+      {
+        "file": "scripts/replay-api-smoke.mjs",
+        "line": 15,
+        "kind": "webhook_secret",
+        "preview": "  await durable.appendEvent({ eventType: 'run_start', workspaceId: 'default', runId: 'run_api_smoke', payload: { status: 'running', apiKey: [REDACTED]' } })"
+      },
+      {
+        "file": "scripts/replay-api-smoke.mjs",
+        "line": 23,
+        "kind": "api_key",
+        "preview": "  assert(!JSON.stringify(json).includes('[REDACTED_API_KEY]'), 'JSON response must not leak secret')"
+      },
+      {
+        "file": "scripts/replay-incident-smoke.mjs",
+        "line": 58,
+        "kind": "api_key",
+        "preview": "  await ids.durable.appendEvent({ eventType: 'model_request_started', workspaceId: 'default', runId: ids.runId, payload: { routeId: ids.routeId, apiKey: [REDACTED]' } })"
+      },
+      {
+        "file": "scripts/replay-incident-smoke.mjs",
+        "line": 58,
+        "kind": "webhook_secret",
+        "preview": "  await ids.durable.appendEvent({ eventType: 'model_request_started', workspaceId: 'default', runId: ids.runId, payload: { routeId: ids.routeId, apiKey: [REDACTED]' } })"
+      },
+      {
+        "file": "scripts/replay-run-smoke.mjs",
+        "line": 64,
+        "kind": "api_key",
+        "preview": "  await ids.durable.appendEvent({ eventType: 'model_request_started', workspaceId: 'default', runId: ids.runId, payload: { authorization: [REDACTED] [REDACTED_API_KEY]', routeId: ids.routeId } })"
+      },
+      {
+        "file": "scripts/replay-run-smoke.mjs",
+        "line": 64,
+        "kind": "bearer_token",
+        "preview": "  await ids.durable.appendEvent({ eventType: 'model_request_started', workspaceId: 'default', runId: ids.runId, payload: { authorization: [REDACTED] [REDACTED_API_KEY]', routeId: ids.routeId } })"
+      },
+      {
+        "file": "scripts/serve-smoke.mjs",
+        "line": 256,
+        "kind": "webhook_secret",
+        "preview": "    secret: [REDACTED]',"
+      },
+      {
+        "file": "scripts/serve-smoke.mjs",
+        "line": 266,
+        "kind": "webhook_secret",
+        "preview": "    secret: [REDACTED]',"
+      },
+      {
+        "file": "scripts/serve-smoke.mjs",
+        "line": 275,
+        "kind": "webhook_secret",
+        "preview": "  assert(acceptedInbound.ok === true, `gateway inbound webhook should accept a valid secret: [REDACTED]"
+      },
+      {
+        "file": "scripts/serve-smoke.mjs",
+        "line": 282,
+        "kind": "webhook_secret",
+        "preview": "    secret: [REDACTED]',"
+      },
+      {
+        "file": "scripts/serve-smoke.mjs",
+        "line": 297,
+        "kind": "webhook_secret",
+        "preview": "  assert(acceptedFeishuInbound.ok === true, `feishu inbound webhook should accept a valid secret: [REDACTED]"
+      },
+      {
+        "file": "scripts/serve-smoke.mjs",
+        "line": 304,
+        "kind": "webhook_secret",
+        "preview": "    secret: [REDACTED]',"
+      },
+      {
+        "file": "scripts/serve-smoke.mjs",
+        "line": 319,
+        "kind": "webhook_secret",
+        "preview": "  assert(acceptedLarkInbound.ok === true, `lark inbound webhook should accept a valid secret: [REDACTED]"
+      },
+      {
+        "file": "scripts/serve-smoke.mjs",
+        "line": 326,
+        "kind": "webhook_secret",
+        "preview": "    secret: [REDACTED]',"
+      },
+      {
+        "file": "scripts/serve-smoke.mjs",
+        "line": 332,
+        "kind": "webhook_secret",
+        "preview": "  assert(acceptedWeComInbound.ok === true, `wecom inbound webhook should accept a valid secret: [REDACTED]"
+      },
+      {
+        "file": "scripts/serve-smoke.mjs",
+        "line": 339,
+        "kind": "webhook_secret",
+        "preview": "    secret: [REDACTED]',"
+      },
+      {
+        "file": "scripts/stability-runner.mjs",
+        "line": 684,
+        "kind": "webhook_secret",
+        "preview": "        token: [REDACTED]',"
+      },
+      {
+        "file": "scripts/terminal-approval-smoke.mjs",
+        "line": 10,
+        "kind": "webhook_secret",
+        "preview": "      apiKey: [REDACTED]',"
+      }
+    ]
+  },
+  "licenseAudit": {
+    "packageName": "pandoshare-agent",
+    "privatePackage": true,
+    "licenseStatus": "missing",
+    "blockers": [
+      "LICENSE missing: owner must choose MIT, Apache-2.0, or another license before public release claims.",
+      "not publishable until owner changes private flag"
+    ],
+    "dependencies": [
+      {
+        "name": "solid-js",
+        "version": "^1.9.3",
+        "license": "unknown",
+        "scope": "dependency"
+      },
+      {
+        "name": "typescript",
+        "version": "5.8.2",
+        "license": "unknown",
+        "scope": "devDependency"
+      },
+      {
+        "name": "vite",
+        "version": "^5.4.11",
+        "license": "unknown",
+        "scope": "devDependency"
+      },
+      {
+        "name": "vite-plugin-solid",
+        "version": "^2.10.2",
+        "license": "unknown",
+        "scope": "devDependency"
+      }
+    ],
+    "provenance": [
+      "OpenCode MIT: ideas may be studied; copied code must preserve license.",
+      "Codex Apache-2.0: ideas may be studied; copied code must preserve NOTICE obligations.",
+      "Hermes MIT: ideas may be studied; copied code must preserve license.",
+      "Claude Code research: clean-room architecture study only; do not copy proprietary source, prompts, or text."
+    ]
+  },
+  "boundaries": [
+    "read-only profile must not write files",
+    "workspace-write must not write outside approved workspace roots",
+    "dangerous GUI actions require approval",
+    "gateway outbound must use a durable queue and approval boundary",
+    "replay must not execute recovery side effects",
+    "model events must not persist secrets"
+  ],
+  "blockers": [
+    "LICENSE missing: owner must choose MIT, Apache-2.0, or another license before public release claims.",
+    "not publishable until owner changes private flag"
+  ]
+}

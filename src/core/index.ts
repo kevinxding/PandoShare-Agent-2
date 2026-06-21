@@ -2,6 +2,8 @@
 export * from './backend/index.js'
 export * from './benchmark/index.js'
 export * from './code-agent/index.js'
+export * from './chaos/index.js'
+export * from './cloud/index.js'
 export * from './compaction/index.js'
 export * from './context/index.js'
 export * from './durable/index.js'
@@ -9,11 +11,13 @@ export * from './gateway/index.js'
 export * from './gui/index.js'
 export * from './loop/index.js'
 export * from './memory/index.js'
+export * from './mission-control/index.js'
 export * from './model/index.js'
 export * from './permissions-v2/index.js'
 export * from './protocol/index.js'
 export * from './replay/index.js'
 export * from './sandbox/index.js'
+export * from './security/index.js'
 export * from './store/index.js'
 export * from './tool/index.js'
 export * from './workspace/index.js'
@@ -23,4 +27,8 @@ export * from './gui-benchmark/index.js'
 export * from './loop-engineering/index.js'
 export * from './model-probe/index.js'
 export * from './replay-golden/index.js'
+
+
+
+
 
