@@ -117,7 +117,26 @@
     "permission:profile-smoke": "npm run build -- --pretty false && node scripts/permission-profile-smoke.mjs",
     "path-policy:smoke": "npm run build -- --pretty false && node scripts/path-policy-smoke.mjs",
     "command-policy:smoke": "npm run build -- --pretty false && node scripts/command-policy-smoke.mjs",
-    "productization:phase-smoke": "npm run build -- --pretty false && node scripts/productization-phase-smoke.mjs"
+    "productization:phase-smoke": "npm run build -- --pretty false && node scripts/productization-phase-smoke.mjs",
+    "loop:v3-smoke": "npm run build -- --pretty false && node scripts/loop-engineering-v3-smoke.mjs",
+    "loop:verifier-graph-smoke": "npm run build -- --pretty false && node scripts/loop-verifier-graph-smoke.mjs",
+    "loop:skill-candidate-smoke": "npm run build -- --pretty false && node scripts/loop-skill-candidate-smoke.mjs",
+    "gui:benchmark-smoke": "npm run build -- --pretty false && node scripts/gui-benchmark-smoke.mjs",
+    "gui:real-probe-smoke": "npm run build -- --pretty false && node scripts/gui-real-probe-smoke.mjs",
+    "gui:recovery-benchmark-smoke": "npm run build -- --pretty false && node scripts/gui-recovery-benchmark-smoke.mjs",
+    "daemon:foreground-smoke": "npm run build -- --pretty false && node scripts/daemon-foreground-smoke.mjs",
+    "gateway:service-smoke": "npm run build -- --pretty false && node scripts/gateway-service-smoke.mjs",
+    "gateway:webhook-smoke": "npm run build -- --pretty false && node scripts/gateway-webhook-smoke.mjs",
+    "gateway:watchdog-smoke": "npm run build -- --pretty false && node scripts/gateway-watchdog-smoke.mjs",
+    "model:probe-smoke": "npm run build -- --pretty false && node scripts/model-probe-smoke.mjs",
+    "model:probe-offline-smoke": "npm run build -- --pretty false && node scripts/model-probe-offline-smoke.mjs",
+    "model:probe-report-smoke": "npm run build -- --pretty false && node scripts/model-probe-report-smoke.mjs",
+    "model:probe-fallback-smoke": "npm run build -- --pretty false && node scripts/model-probe-fallback-smoke.mjs",
+    "replay:golden-smoke": "npm run build -- --pretty false && node scripts/replay-golden-smoke.mjs",
+    "replay:golden-diff-smoke": "npm run build -- --pretty false && node scripts/replay-golden-diff-smoke.mjs",
+    "replay:golden-report-smoke": "npm run build -- --pretty false && node scripts/replay-golden-report-smoke.mjs",
+    "replay:golden-update-dry-run": "npm run build -- --pretty false && node scripts/replay-golden-update-dry-run.mjs",
+    "productization:wave-2-smoke": "npm run build -- --pretty false && node scripts/productization-wave-2-smoke.mjs"
   },
   "engines": {
     "node": ">=18.0.0"

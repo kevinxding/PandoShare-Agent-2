@@ -1,0 +1,33 @@
+{
+  "artifacts": [
+    {
+      "artifactId": "artifact_1mh4cbg",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_unsafe_recovery_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_unsafe_recovery_002"
+    },
+    {
+      "artifactId": "artifact_y2801w",
+      "kind": "checkpoint_ref",
+      "ref": "artifact://golden/unsafe-recovery/checkpoint",
+      "safeSummary": "checkpoint_ref at $.checkpointRef",
+      "sourceEventId": "evt_unsafe_recovery_002"
+    },
+    {
+      "artifactId": "artifact_1twt07r",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_unsafe_recovery_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_unsafe_recovery_003"
+    },
+    {
+      "artifactId": "artifact_chy322",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_unsafe_recovery_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_unsafe_recovery_004"
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,15 @@
+{
+  "edgeCount": 18,
+  "edgeTypes": {
+    "fallback_to_model": 1,
+    "gui_to_checkpoint": 2,
+    "run_to_model": 5,
+    "same_run": 7,
+    "same_thread": 3
+  },
+  "leafCount": 6,
+  "nodeCount": 11,
+  "orphanCount": 0,
+  "rootCount": 3,
+  "warnings": []
+}

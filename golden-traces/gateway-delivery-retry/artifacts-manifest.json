@@ -1,0 +1,26 @@
+{
+  "artifacts": [
+    {
+      "artifactId": "artifact_1udhs3l",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_gateway_retry_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_gateway_retry_005"
+    },
+    {
+      "artifactId": "artifact_1r3r7fz",
+      "kind": "checkpoint_ref",
+      "ref": "artifact://golden/gateway-retry/checkpoint",
+      "safeSummary": "checkpoint_ref at $.checkpointRef",
+      "sourceEventId": "evt_gateway_retry_005"
+    },
+    {
+      "artifactId": "artifact_3mkvvk",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_gateway_retry_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_gateway_retry_006"
+    }
+  ],
+  "warnings": []
+}

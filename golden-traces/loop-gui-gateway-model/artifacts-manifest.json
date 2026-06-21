@@ -1,0 +1,61 @@
+{
+  "artifacts": [
+    {
+      "artifactId": "artifact_o7tohl",
+      "kind": "model_usage_ref",
+      "ref": "usage_lggm",
+      "safeSummary": "model_usage_ref at $.usageId",
+      "sourceEventId": "evt_lggm_009"
+    },
+    {
+      "artifactId": "artifact_1bjzsl4",
+      "kind": "tool_result_ref",
+      "ref": "artifact://golden/lggm/tool-result",
+      "safeSummary": "tool_result_ref at $.resultRef",
+      "sourceEventId": "evt_lggm_010"
+    },
+    {
+      "artifactId": "artifact_1mwbbdp",
+      "kind": "screenshot_ref",
+      "ref": "artifact://golden/lggm/screenshot",
+      "safeSummary": "screenshot_ref at $.screenshotRef",
+      "sourceEventId": "evt_lggm_012"
+    },
+    {
+      "artifactId": "artifact_1hkjyvr",
+      "kind": "observation_ref",
+      "ref": "artifact://golden/lggm/observation",
+      "safeSummary": "observation_ref at $.observationId",
+      "sourceEventId": "evt_lggm_012"
+    },
+    {
+      "artifactId": "artifact_17iwcpi",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_lggm_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_lggm_013"
+    },
+    {
+      "artifactId": "artifact_kefz2m",
+      "kind": "checkpoint_ref",
+      "ref": "artifact://golden/lggm/checkpoint",
+      "safeSummary": "checkpoint_ref at $.checkpointRef",
+      "sourceEventId": "evt_lggm_013"
+    },
+    {
+      "artifactId": "artifact_1qt66p5",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_lggm_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_lggm_014"
+    },
+    {
+      "artifactId": "artifact_me626w",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_lggm_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_lggm_015"
+    }
+  ],
+  "warnings": []
+}

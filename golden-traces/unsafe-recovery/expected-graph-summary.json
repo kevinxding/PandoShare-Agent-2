@@ -1,0 +1,14 @@
+{
+  "edgeCount": 18,
+  "edgeTypes": {
+    "checkpoint_to_recovery": 1,
+    "gui_to_checkpoint": 4,
+    "same_run": 10,
+    "same_thread": 3
+  },
+  "leafCount": 4,
+  "nodeCount": 10,
+  "orphanCount": 0,
+  "rootCount": 5,
+  "warnings": []
+}

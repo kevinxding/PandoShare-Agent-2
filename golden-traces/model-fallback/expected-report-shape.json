@@ -1,0 +1,136 @@
+{
+  "artifactKinds": [
+    "checkpoint_ref",
+    "checkpoint_ref",
+    "checkpoint_ref"
+  ],
+  "eventCount": 7,
+  "markdownSections": [
+    "## Summary",
+    "## Scope",
+    "## Status",
+    "## Metrics",
+    "## Incident Summary",
+    "## Operator Recommendations",
+    "## Causal Graph",
+    "## Run Projection",
+    "## Loop Projection",
+    "## GUI Timeline",
+    "## Gateway Timeline",
+    "## Model Timeline",
+    "## Tool Timeline",
+    "## Checkpoints",
+    "## Recovery",
+    "## Audit",
+    "## Timeline",
+    "## Artifacts",
+    "## Redaction",
+    "## Warnings / Errors"
+  ],
+  "metrics": {
+    "events": 7,
+    "graphEdges": 18,
+    "graphNodes": 11,
+    "incidents": 2,
+    "recommendations": 2,
+    "timelineItems": 7
+  },
+  "projections": {
+    "approval": {
+      "metrics": {
+        "approvals": 0,
+        "pending": 0
+      },
+      "status": "unknown"
+    },
+    "checkpoint": {
+      "metrics": {
+        "checkpoints": 1
+      },
+      "status": "completed"
+    },
+    "gateway": {
+      "metrics": {
+        "deliveries": 0,
+        "failed": 0,
+        "gatewayEvents": 0,
+        "inbound": 0
+      },
+      "status": "unknown"
+    },
+    "gui": {
+      "metrics": {
+        "failed": 0,
+        "guiActions": 0,
+        "stuck": 0
+      },
+      "status": "unknown"
+    },
+    "loop": {
+      "metrics": {
+        "loops": 0
+      },
+      "status": "unknown"
+    },
+    "model": {
+      "metrics": {
+        "budgetExceeded": 0,
+        "fallbackExhausted": 1,
+        "modelEvents": 4,
+        "rateLimited": 1,
+        "routes": 1
+      },
+      "status": "failed"
+    },
+    "recovery": {
+      "metrics": {
+        "recoveryEvents": 0
+      },
+      "status": "unknown"
+    },
+    "run": {
+      "metrics": {
+        "checkpoints": 1,
+        "guiActions": 0,
+        "modelRoutes": 1,
+        "runs": 1,
+        "terminalEvents": 1
+      },
+      "status": "failed"
+    },
+    "thread": {
+      "metrics": {
+        "threads": 1
+      },
+      "status": "created"
+    },
+    "tool": {
+      "metrics": {
+        "failed": 0,
+        "toolCalls": 0
+      },
+      "status": "unknown"
+    }
+  },
+  "query": {
+    "caller": "test",
+    "followDepth": 3,
+    "followRelated": true,
+    "format": "markdown",
+    "includeAll": false,
+    "includeArtifacts": false,
+    "includeIncidents": true,
+    "includeLegacy": true,
+    "includePayload": "summary",
+    "redaction": "strict",
+    "runId": "run_model_fallback",
+    "scope": "run",
+    "workspaceId": "golden"
+  },
+  "redaction": {
+    "redactedFieldCount": 0,
+    "suspectedSecretPathCount": 0
+  },
+  "status": "error",
+  "timelineLength": 7
+}

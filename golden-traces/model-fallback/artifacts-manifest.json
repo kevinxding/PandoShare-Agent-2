@@ -1,0 +1,26 @@
+{
+  "artifacts": [
+    {
+      "artifactId": "artifact_t5d5mu",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_model_fallback_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_model_fallback_006"
+    },
+    {
+      "artifactId": "artifact_1t54ds4",
+      "kind": "checkpoint_ref",
+      "ref": "artifact://golden/model-fallback/checkpoint",
+      "safeSummary": "checkpoint_ref at $.checkpointRef",
+      "sourceEventId": "evt_model_fallback_006"
+    },
+    {
+      "artifactId": "artifact_68kubz",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_model_fallback_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_model_fallback_007"
+    }
+  ],
+  "warnings": []
+}

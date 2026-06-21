@@ -1,0 +1,12 @@
+﻿{
+  "schemaVersion": 1,
+  "name": "PandoShare Dingxu GUI Real Benchmark Baseline",
+  "description": "Mock-first GUI benchmark scenarios plus a gated Dingxu real backend health probe.",
+  "scenarios": [
+    { "id": "mock-click", "title": "Mock click target", "scenario": "scenarios/mock-click.json", "mode": "mock", "tags": ["mock", "click"] },
+    { "id": "mock-type", "title": "Mock type text", "scenario": "scenarios/mock-type.json", "mode": "mock", "tags": ["mock", "type"] },
+    { "id": "mock-stuck", "title": "Mock stuck recovery", "scenario": "scenarios/mock-stuck.json", "mode": "mock", "tags": ["mock", "stuck", "release"] },
+    { "id": "mock-approval", "title": "Mock approval required", "scenario": "scenarios/mock-approval.json", "mode": "mock", "tags": ["mock", "approval"] },
+    { "id": "dingxu-health", "title": "Dingxu backend health probe", "scenario": "scenarios/dingxu-health.json", "mode": "real_dingxu", "tags": ["dingxu", "real", "health"] }
+  ]
+}

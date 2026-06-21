@@ -1,0 +1,37 @@
+﻿{
+  "schemaVersion": 1,
+  "id": "mock-type",
+  "title": "Mock type text",
+  "description": "Runs trusted mock text input through GuiRuntime without touching the real desktop.",
+  "type": "type_text",
+  "mode": "mock",
+  "action": {
+    "action": "type_text",
+    "text": "pando gui benchmark",
+    "verify": true,
+    "approvalPolicy": "trusted",
+    "timeoutMs": 1000
+  },
+  "mock": {
+    "observationLatencyMs": 1,
+    "actionLatencyMs": 2,
+    "verificationLatencyMs": 1,
+    "verificationStatus": "passed",
+    "screenshotRefs": [
+      "mock://gui-real/mock-type/before.png",
+      "mock://gui-real/mock-type/action.png",
+      "mock://gui-real/mock-type/after.png",
+      "mock://gui-real/mock-type/verify.png"
+    ]
+  },
+  "expectations": {
+    "status": "passed",
+    "verificationStatus": "passed",
+    "stuckDetected": false,
+    "inputReleased": false,
+    "approvalRequired": false,
+    "actionExecuted": true,
+    "minEventCount": 5
+  },
+  "tags": ["type", "mock"]
+}

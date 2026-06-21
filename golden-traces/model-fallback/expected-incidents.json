@@ -1,0 +1,38 @@
+[
+  {
+    "eventIds": [
+      "evt_model_fallback_005"
+    ],
+    "importantIds": {
+      "eventIds": [
+        "evt_model_fallback_005"
+      ],
+      "routeIds": [
+        "route_model_fallback"
+      ],
+      "runIds": [
+        "run_model_fallback"
+      ]
+    },
+    "kind": "model_fallback_exhausted",
+    "severity": "error"
+  },
+  {
+    "eventIds": [
+      "evt_model_fallback_003"
+    ],
+    "importantIds": {
+      "eventIds": [
+        "evt_model_fallback_003"
+      ],
+      "routeIds": [
+        "route_model_fallback"
+      ],
+      "runIds": [
+        "run_model_fallback"
+      ]
+    },
+    "kind": "model_rate_limited",
+    "severity": "warning"
+  }
+]

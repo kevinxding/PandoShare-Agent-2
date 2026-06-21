@@ -13,6 +13,6 @@ Generated files:
 - `docs/kernel/generated-acceptance-report.md`
 - `docs/kernel/generated-acceptance-report.json`
 
-The generator now covers the original kernel gates plus productization gates for BackendService, ToolRuntime V2, CodeAgent harness, benchmark harness, Context/Memory/Compaction V2, Worktree/Sandbox/Permissions, and the integrated productization phase smoke.
+The generator covers the original kernel gates, Wave 1 productization gates for BackendService, ToolRuntime V2, CodeAgent harness, benchmark harness, Context/Memory/Compaction V2, Worktree/Sandbox/Permissions, and Wave 2 gates for Loop Engineering V3, Dingxu GUI Benchmark, Gateway Real Daemon, Model Production Probes, Replay Golden Traces, and the integrated Wave 2 smoke.
 
 Release decisions must use the generated report status, command list, durations, and output previews. Historical manual notes were moved out of this authority path because they can drift from source, scripts, and dist.

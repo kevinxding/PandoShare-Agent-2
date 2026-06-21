@@ -1,0 +1,12 @@
+﻿{
+  "schemaVersion": 1,
+  "id": "dingxu-health",
+  "title": "Dingxu backend health probe",
+  "description": "Detects whether the Dingxu human GUI backend is configured and available. Skips unless PANDO_GUI_REAL=1 is set.",
+  "type": "observe_health",
+  "mode": "real_dingxu",
+  "expectations": {
+    "status": "skipped"
+  },
+  "tags": ["dingxu", "health", "real"]
+}

@@ -1,0 +1,20 @@
+{
+  "edgeCount": 69,
+  "edgeTypes": {
+    "attempt_to_run": 1,
+    "gateway_to_command": 2,
+    "gui_to_checkpoint": 3,
+    "loop_to_attempt": 1,
+    "model_to_usage": 1,
+    "run_to_model": 3,
+    "run_to_tool": 4,
+    "same_run": 50,
+    "same_thread": 3,
+    "tool_to_gui": 1
+  },
+  "leafCount": 17,
+  "nodeCount": 30,
+  "orphanCount": 0,
+  "rootCount": 6,
+  "warnings": []
+}

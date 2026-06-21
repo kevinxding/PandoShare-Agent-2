@@ -1,0 +1,38 @@
+﻿{
+  "schemaVersion": 1,
+  "id": "mock-stuck",
+  "title": "Mock stuck recovery",
+  "description": "Forces a mock write action timeout and verifies stuck detection plus release_all evidence.",
+  "type": "stuck_recovery",
+  "mode": "mock",
+  "action": {
+    "action": "click",
+    "x": 3,
+    "y": 4,
+    "verify": true,
+    "approvalPolicy": "trusted",
+    "timeoutMs": 1
+  },
+  "mock": {
+    "observationLatencyMs": 1,
+    "actionLatencyMs": 25,
+    "verificationLatencyMs": 1,
+    "verificationStatus": "passed",
+    "screenshotRefs": [
+      "mock://gui-real/mock-stuck/before.png",
+      "mock://gui-real/mock-stuck/release.png"
+    ]
+  },
+  "expectations": {
+    "status": "passed",
+    "verificationStatus": "failed",
+    "stuckDetected": true,
+    "inputReleased": true,
+    "approvalRequired": false,
+    "recoveryDecision": "requires_human",
+    "actionExecuted": true,
+    "failureReason": "timeout",
+    "minEventCount": 5
+  },
+  "tags": ["stuck", "release", "mock"]
+}

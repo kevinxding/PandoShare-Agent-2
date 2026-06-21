@@ -1,0 +1,44 @@
+[
+  {
+    "eventIds": [
+      "evt_gateway_retry_003"
+    ],
+    "importantIds": {
+      "deliveryIds": [
+        "delivery_gateway_retry"
+      ],
+      "eventIds": [
+        "evt_gateway_retry_003"
+      ],
+      "loopIds": [
+        "loop_gateway_retry"
+      ],
+      "runIds": [
+        "run_gateway_retry"
+      ]
+    },
+    "kind": "gateway_delivery_failed",
+    "severity": "error"
+  },
+  {
+    "eventIds": [
+      "evt_gateway_retry_004"
+    ],
+    "importantIds": {
+      "deliveryIds": [
+        "delivery_gateway_retry"
+      ],
+      "eventIds": [
+        "evt_gateway_retry_004"
+      ],
+      "loopIds": [
+        "loop_gateway_retry"
+      ],
+      "runIds": [
+        "run_gateway_retry"
+      ]
+    },
+    "kind": "gateway_retry_exhausted",
+    "severity": "critical"
+  }
+]

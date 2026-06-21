@@ -1,0 +1,35 @@
+﻿{
+  "schemaVersion": 1,
+  "id": "mock-approval",
+  "title": "Mock approval required",
+  "description": "Requests a GUI write with approvalPolicy=ask and verifies it waits without executing adapter action.",
+  "type": "approval_required",
+  "mode": "mock",
+  "action": {
+    "action": "click",
+    "x": 8,
+    "y": 12,
+    "verify": true,
+    "approvalPolicy": "ask",
+    "timeoutMs": 1000
+  },
+  "mock": {
+    "observationLatencyMs": 1,
+    "actionLatencyMs": 2,
+    "verificationLatencyMs": 1,
+    "verificationStatus": "passed",
+    "screenshotRefs": [
+      "mock://gui-real/mock-approval/requested.png"
+    ]
+  },
+  "expectations": {
+    "status": "passed",
+    "verificationStatus": "skipped",
+    "stuckDetected": false,
+    "inputReleased": false,
+    "approvalRequired": true,
+    "actionExecuted": false,
+    "minEventCount": 2
+  },
+  "tags": ["approval", "mock"]
+}

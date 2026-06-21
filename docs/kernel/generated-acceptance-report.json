@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "startedAtMs": 1782022442477,
-  "finishedAtMs": 1782022716591,
-  "durationMs": 274114,
+  "startedAtMs": 1782027569088,
+  "finishedAtMs": 1782027989071,
+  "durationMs": 419983,
   "cwd": "D:\\Users\\Lenovo\\Desktop\\open-source-visual-agent\\pandoshare",
-  "stepCount": 55,
-  "passedStepCount": 55,
+  "stepCount": 74,
+  "passedStepCount": 74,
   "failedStepCount": 0,
   "steps": [
     {
@@ -14,7 +14,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 3268,
+      "durationMs": 3610,
       "stdoutPreview": "> pandoshare-agent@0.1.0 typecheck\n> npx --yes -p typescript@5.8.2 tsc --noEmit",
       "stderrPreview": ""
     },
@@ -24,7 +24,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 731,
+      "durationMs": 752,
       "stdoutPreview": "> pandoshare-agent@0.1.0 check\n> npm run check:architecture\n\n\n> pandoshare-agent@0.1.0 check:architecture\n> node scripts/architecture-check.mjs\n\nArchitecture check passed.\nRoot: .\nChecked paths: 21",
       "stderrPreview": ""
     },
@@ -34,7 +34,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 4618,
+      "durationMs": 5139,
       "stdoutPreview": "> pandoshare-agent@0.1.0 reality:api-contract\n> npm run build -- --pretty false && node scripts/reality-api-contract-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nreality api contract smoke passed",
       "stderrPreview": ""
     },
@@ -44,7 +44,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 492,
+      "durationMs": 537,
       "stdoutPreview": "> pandoshare-agent@0.1.0 reality:package\n> node scripts/reality-package-smoke.mjs\n\nreality package smoke passed",
       "stderrPreview": ""
     },
@@ -54,7 +54,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 588,
+      "durationMs": 596,
       "stdoutPreview": "> pandoshare-agent@0.1.0 reality:docs\n> node scripts/reality-docs-smoke.mjs\n\nreality docs smoke passed",
       "stderrPreview": ""
     },
@@ -64,7 +64,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 4676,
+      "durationMs": 5305,
       "stdoutPreview": "> pandoshare-agent@0.1.0 reality:dist\n> npm run build -- --pretty false && node scripts/reality-dist-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nreality dist smoke passed",
       "stderrPreview": ""
     },
@@ -74,7 +74,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5062,
+      "durationMs": 5516,
       "stdoutPreview": "> pandoshare-agent@0.1.0 backend:service-smoke\n> npm run build -- --pretty false && node scripts/backend-service-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nbackend-service passed",
       "stderrPreview": ""
     },
@@ -84,7 +84,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5016,
+      "durationMs": 5636,
       "stdoutPreview": "> pandoshare-agent@0.1.0 backend:contract-smoke\n> npm run build -- --pretty false && node scripts/backend-contract-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nbackend-contract passed",
       "stderrPreview": ""
     },
@@ -94,7 +94,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5089,
+      "durationMs": 5595,
       "stdoutPreview": "> pandoshare-agent@0.1.0 tool-runtime:smoke\n> npm run build -- --pretty false && node scripts/tool-runtime-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ntool-runtime passed",
       "stderrPreview": ""
     },
@@ -104,7 +104,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5199,
+      "durationMs": 5554,
       "stdoutPreview": "> pandoshare-agent@0.1.0 code-agent:harness-smoke\n> npm run build -- --pretty false && node scripts/code-agent-harness-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ncode-agent-harness passed",
       "stderrPreview": ""
     },
@@ -114,7 +114,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5319,
+      "durationMs": 5773,
       "stdoutPreview": "> pandoshare-agent@0.1.0 code-agent:fixture-smoke\n> npm run build -- --pretty false && node scripts/code-agent-fixture-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ncode-agent-fixture passed",
       "stderrPreview": ""
     },
@@ -124,7 +124,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 4874,
+      "durationMs": 5631,
       "stdoutPreview": "> pandoshare-agent@0.1.0 patch-verifier:smoke\n> npm run build -- --pretty false && node scripts/patch-verifier-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\npatch-verifier passed",
       "stderrPreview": ""
     },
@@ -134,7 +134,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 4851,
+      "durationMs": 6059,
       "stdoutPreview": "> pandoshare-agent@0.1.0 benchmark:smoke\n> npm run build -- --pretty false && node scripts/benchmark-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nbenchmark passed",
       "stderrPreview": ""
     },
@@ -144,7 +144,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 4687,
+      "durationMs": 5814,
       "stdoutPreview": "> pandoshare-agent@0.1.0 benchmark:code-smoke\n> npm run build -- --pretty false && node scripts/benchmark-code-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nbenchmark-code passed",
       "stderrPreview": ""
     },
@@ -154,7 +154,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 4717,
+      "durationMs": 5645,
       "stdoutPreview": "> pandoshare-agent@0.1.0 benchmark:loop-smoke\n> npm run build -- --pretty false && node scripts/benchmark-loop-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nbenchmark-loop passed",
       "stderrPreview": ""
     },
@@ -164,7 +164,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 4846,
+      "durationMs": 5958,
       "stdoutPreview": "> pandoshare-agent@0.1.0 benchmark:gateway-smoke\n> npm run build -- --pretty false && node scripts/benchmark-gateway-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nbenchmark-gateway passed",
       "stderrPreview": ""
     },
@@ -174,7 +174,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 4684,
+      "durationMs": 5745,
       "stdoutPreview": "> pandoshare-agent@0.1.0 benchmark:gui-smoke\n> npm run build -- --pretty false && node scripts/benchmark-gui-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nbenchmark-gui passed",
       "stderrPreview": ""
     },
@@ -184,7 +184,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 4866,
+      "durationMs": 5861,
       "stdoutPreview": "> pandoshare-agent@0.1.0 benchmark:report-smoke\n> npm run build -- --pretty false && node scripts/benchmark-report-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nbenchmark-report passed",
       "stderrPreview": ""
     },
@@ -194,7 +194,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5110,
+      "durationMs": 6118,
       "stdoutPreview": "> pandoshare-agent@0.1.0 context:runtime-smoke\n> npm run build -- --pretty false && node scripts/context-runtime-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ncontext-runtime passed",
       "stderrPreview": ""
     },
@@ -204,7 +204,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5081,
+      "durationMs": 5902,
       "stdoutPreview": "> pandoshare-agent@0.1.0 context:evidence-smoke\n> npm run build -- --pretty false && node scripts/evidence-pack-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nevidence-pack passed",
       "stderrPreview": ""
     },
@@ -214,7 +214,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5188,
+      "durationMs": 5722,
       "stdoutPreview": "> pandoshare-agent@0.1.0 memory:smoke\n> npm run build -- --pretty false && node scripts/memory-store-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nmemory-store passed",
       "stderrPreview": ""
     },
@@ -224,7 +224,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5223,
+      "durationMs": 6252,
       "stdoutPreview": "> pandoshare-agent@0.1.0 compaction:runtime-smoke\n> npm run build -- --pretty false && node scripts/compaction-runtime-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ncompaction-runtime passed",
       "stderrPreview": ""
     },
@@ -234,7 +234,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5199,
+      "durationMs": 6685,
       "stdoutPreview": "> pandoshare-agent@0.1.0 context:budget-smoke\n> npm run build -- --pretty false && node scripts/context-budget-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ncontext-budget passed",
       "stderrPreview": ""
     },
@@ -244,7 +244,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5263,
+      "durationMs": 6046,
       "stdoutPreview": "> pandoshare-agent@0.1.0 worktree:smoke\n> npm run build -- --pretty false && node scripts/worktree-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nworktree passed",
       "stderrPreview": ""
     },
@@ -254,7 +254,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5449,
+      "durationMs": 6246,
       "stdoutPreview": "> pandoshare-agent@0.1.0 sandbox:policy-smoke\n> npm run build -- --pretty false && node scripts/sandbox-policy-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nsandbox-policy passed",
       "stderrPreview": ""
     },
@@ -264,7 +264,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5166,
+      "durationMs": 5865,
       "stdoutPreview": "> pandoshare-agent@0.1.0 permission:profile-smoke\n> npm run build -- --pretty false && node scripts/permission-profile-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\npermission-profile passed",
       "stderrPreview": ""
     },
@@ -274,7 +274,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5154,
+      "durationMs": 5770,
       "stdoutPreview": "> pandoshare-agent@0.1.0 path-policy:smoke\n> npm run build -- --pretty false && node scripts/path-policy-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\npath-policy passed",
       "stderrPreview": ""
     },
@@ -284,7 +284,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 4991,
+      "durationMs": 5955,
       "stdoutPreview": "> pandoshare-agent@0.1.0 command-policy:smoke\n> npm run build -- --pretty false && node scripts/command-policy-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ncommand-policy passed",
       "stderrPreview": ""
     },
@@ -294,8 +294,198 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5191,
+      "durationMs": 5893,
       "stdoutPreview": "> pandoshare-agent@0.1.0 productization:phase-smoke\n> npm run build -- --pretty false && node scripts/productization-phase-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nproductization-phase passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "loop-v3-smoke",
+      "command": "npm.cmd run loop:v3-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5517,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 loop:v3-smoke\n> npm run build -- --pretty false && node scripts/loop-engineering-v3-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nloop engineering v3 smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "loop-verifier-graph-smoke",
+      "command": "npm.cmd run loop:verifier-graph-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5381,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 loop:verifier-graph-smoke\n> npm run build -- --pretty false && node scripts/loop-verifier-graph-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nloop verifier graph smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "loop-skill-candidate-smoke",
+      "command": "npm.cmd run loop:skill-candidate-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5362,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 loop:skill-candidate-smoke\n> npm run build -- --pretty false && node scripts/loop-skill-candidate-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nloop skill candidate smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "gui-benchmark-smoke",
+      "command": "npm.cmd run gui:benchmark-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5825,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 gui:benchmark-smoke\n> npm run build -- --pretty false && node scripts/gui-benchmark-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngui benchmark smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "gui-real-probe-smoke",
+      "command": "npm.cmd run gui:real-probe-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5393,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 gui:real-probe-smoke\n> npm run build -- --pretty false && node scripts/gui-real-probe-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngui real probe smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "gui-recovery-benchmark-smoke",
+      "command": "npm.cmd run gui:recovery-benchmark-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5853,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 gui:recovery-benchmark-smoke\n> npm run build -- --pretty false && node scripts/gui-recovery-benchmark-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngui recovery benchmark smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "daemon-foreground-smoke",
+      "command": "npm.cmd run daemon:foreground-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5493,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 daemon:foreground-smoke\n> npm run build -- --pretty false && node scripts/daemon-foreground-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ndaemon foreground smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "gateway-service-smoke",
+      "command": "npm.cmd run gateway:service-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5797,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 gateway:service-smoke\n> npm run build -- --pretty false && node scripts/gateway-service-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngateway service smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "gateway-webhook-smoke",
+      "command": "npm.cmd run gateway:webhook-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 10580,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 gateway:webhook-smoke\n> npm run build -- --pretty false && node scripts/gateway-webhook-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngateway webhook smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "gateway-watchdog-smoke",
+      "command": "npm.cmd run gateway:watchdog-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5259,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 gateway:watchdog-smoke\n> npm run build -- --pretty false && node scripts/gateway-watchdog-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngateway watchdog smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "model-probe-smoke",
+      "command": "npm.cmd run model:probe-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5466,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 model:probe-smoke\n> npm run build -- --pretty false && node scripts/model-probe-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nmodel probe smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "model-probe-offline-smoke",
+      "command": "npm.cmd run model:probe-offline-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5489,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 model:probe-offline-smoke\n> npm run build -- --pretty false && node scripts/model-probe-offline-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nmodel probe offline smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "model-probe-report-smoke",
+      "command": "npm.cmd run model:probe-report-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5517,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 model:probe-report-smoke\n> npm run build -- --pretty false && node scripts/model-probe-report-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nmodel probe report smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "model-probe-fallback-smoke",
+      "command": "npm.cmd run model:probe-fallback-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5523,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 model:probe-fallback-smoke\n> npm run build -- --pretty false && node scripts/model-probe-fallback-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nmodel probe fallback smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "replay-golden-smoke",
+      "command": "npm.cmd run replay:golden-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5682,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 replay:golden-smoke\n> npm run build -- --pretty false && node scripts/replay-golden-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nreplay golden smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "replay-golden-diff-smoke",
+      "command": "npm.cmd run replay:golden-diff-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5743,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 replay:golden-diff-smoke\n> npm run build -- --pretty false && node scripts/replay-golden-diff-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nreplay golden diff smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "replay-golden-report-smoke",
+      "command": "npm.cmd run replay:golden-report-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5593,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 replay:golden-report-smoke\n> npm run build -- --pretty false && node scripts/replay-golden-report-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nreplay golden report smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "replay-golden-update-dry-run",
+      "command": "npm.cmd run replay:golden-update-dry-run",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5587,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 replay:golden-update-dry-run\n> npm run build -- --pretty false && node scripts/replay-golden-update-dry-run.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nreplay golden update dry-run smoke passed",
+      "stderrPreview": ""
+    },
+    {
+      "id": "productization-wave-2-smoke",
+      "command": "npm.cmd run productization:wave-2-smoke",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 6041,
+      "stdoutPreview": "> pandoshare-agent@0.1.0 productization:wave-2-smoke\n> npm run build -- --pretty false && node scripts/productization-wave-2-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nproductization wave 2 smoke passed",
       "stderrPreview": ""
     },
     {
@@ -304,7 +494,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 6607,
+      "durationMs": 6809,
       "stdoutPreview": "> pandoshare-agent@0.1.0 kernel:smoke\n> npm run build -- --pretty false && node scripts/kernel-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nkernel smoke passed",
       "stderrPreview": ""
     },
@@ -314,7 +504,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5621,
+      "durationMs": 6196,
       "stdoutPreview": "> pandoshare-agent@0.1.0 durable:smoke\n> npm run build -- --pretty false && node scripts/durable-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ndurable smoke passed",
       "stderrPreview": ""
     },
@@ -324,7 +514,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 6538,
+      "durationMs": 7015,
       "stdoutPreview": "> pandoshare-agent@0.1.0 durable:hardening-smoke\n> npm run build -- --pretty false && node scripts/durable-hardening-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ndurable hardening smoke passed",
       "stderrPreview": ""
     },
@@ -334,7 +524,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5442,
+      "durationMs": 5781,
       "stdoutPreview": "> pandoshare-agent@0.1.0 loop:core-smoke\n> npm run build -- --pretty false && node scripts/core-loop-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ncore loop smoke passed",
       "stderrPreview": ""
     },
@@ -344,7 +534,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5293,
+      "durationMs": 5953,
       "stdoutPreview": "> pandoshare-agent@0.1.0 loop:projection-smoke\n> npm run build -- --pretty false && node scripts/loop-projection-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nloop projection smoke passed",
       "stderrPreview": ""
     },
@@ -354,7 +544,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5470,
+      "durationMs": 5841,
       "stdoutPreview": "> pandoshare-agent@0.1.0 loop:recovery-smoke\n> npm run build -- --pretty false && node scripts/loop-recovery-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nloop recovery smoke passed",
       "stderrPreview": ""
     },
@@ -364,7 +554,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5607,
+      "durationMs": 6090,
       "stdoutPreview": "> pandoshare-agent@0.1.0 gui:runtime-smoke\n> npm run build -- --pretty false && node scripts/gui-runtime-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngui runtime smoke passed",
       "stderrPreview": ""
     },
@@ -374,7 +564,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5236,
+      "durationMs": 5785,
       "stdoutPreview": "> pandoshare-agent@0.1.0 gui:approval-smoke\n> npm run build -- --pretty false && node scripts/gui-approval-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngui approval smoke passed",
       "stderrPreview": ""
     },
@@ -384,7 +574,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5438,
+      "durationMs": 6101,
       "stdoutPreview": "> pandoshare-agent@0.1.0 gui:recovery-smoke\n> npm run build -- --pretty false && node scripts/gui-recovery-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngui recovery smoke passed",
       "stderrPreview": ""
     },
@@ -394,7 +584,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5371,
+      "durationMs": 6071,
       "stdoutPreview": "> pandoshare-agent@0.1.0 gateway:core-smoke\n> npm run build -- --pretty false && node scripts/gateway-core-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngateway core smoke passed",
       "stderrPreview": ""
     },
@@ -404,7 +594,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5289,
+      "durationMs": 5487,
       "stdoutPreview": "> pandoshare-agent@0.1.0 gateway:command-smoke\n> npm run build -- --pretty false && node scripts/gateway-command-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngateway command smoke passed",
       "stderrPreview": ""
     },
@@ -414,7 +604,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5438,
+      "durationMs": 5899,
       "stdoutPreview": "> pandoshare-agent@0.1.0 gateway:delivery-smoke\n> npm run build -- --pretty false && node scripts/gateway-delivery-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngateway delivery smoke passed",
       "stderrPreview": ""
     },
@@ -424,7 +614,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5152,
+      "durationMs": 6123,
       "stdoutPreview": "> pandoshare-agent@0.1.0 gateway:approval-smoke\n> npm run build -- --pretty false && node scripts/gateway-approval-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngateway approval smoke passed",
       "stderrPreview": ""
     },
@@ -434,7 +624,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5363,
+      "durationMs": 6211,
       "stdoutPreview": "> pandoshare-agent@0.1.0 gateway:recovery-smoke\n> npm run build -- --pretty false && node scripts/gateway-recovery-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\ngateway recovery smoke passed",
       "stderrPreview": ""
     },
@@ -444,7 +634,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5382,
+      "durationMs": 5943,
       "stdoutPreview": "> pandoshare-agent@0.1.0 model:router-smoke\n> npm run build -- --pretty false && node scripts/model-router-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nmodel router smoke passed",
       "stderrPreview": ""
     },
@@ -454,7 +644,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5248,
+      "durationMs": 5657,
       "stdoutPreview": "> pandoshare-agent@0.1.0 model:capability-smoke\n> npm run build -- --pretty false && node scripts/model-capability-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nmodel capability smoke passed",
       "stderrPreview": ""
     },
@@ -464,7 +654,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5187,
+      "durationMs": 5824,
       "stdoutPreview": "> pandoshare-agent@0.1.0 model:fallback-smoke\n> npm run build -- --pretty false && node scripts/model-fallback-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nmodel fallback smoke passed",
       "stderrPreview": ""
     },
@@ -474,7 +664,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5514,
+      "durationMs": 6024,
       "stdoutPreview": "> pandoshare-agent@0.1.0 model:budget-smoke\n> npm run build -- --pretty false && node scripts/model-budget-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nmodel budget smoke passed",
       "stderrPreview": ""
     },
@@ -484,7 +674,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5271,
+      "durationMs": 6202,
       "stdoutPreview": "> pandoshare-agent@0.1.0 model:profile-smoke\n> npm run build -- --pretty false && node scripts/model-profile-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nmodel profile smoke passed",
       "stderrPreview": ""
     },
@@ -494,7 +684,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5434,
+      "durationMs": 6148,
       "stdoutPreview": "> pandoshare-agent@0.1.0 replay:run-smoke\n> npm run build -- --pretty false && node scripts/replay-run-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nreplay run smoke passed",
       "stderrPreview": ""
     },
@@ -504,7 +694,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5476,
+      "durationMs": 5723,
       "stdoutPreview": "> pandoshare-agent@0.1.0 replay:loop-smoke\n> npm run build -- --pretty false && node scripts/replay-loop-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nreplay loop smoke passed",
       "stderrPreview": ""
     },
@@ -514,7 +704,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5442,
+      "durationMs": 5748,
       "stdoutPreview": "> pandoshare-agent@0.1.0 replay:cross-core-smoke\n> npm run build -- --pretty false && node scripts/replay-cross-core-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nreplay cross core smoke passed",
       "stderrPreview": ""
     },
@@ -524,7 +714,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5445,
+      "durationMs": 5902,
       "stdoutPreview": "> pandoshare-agent@0.1.0 replay:incident-smoke\n> npm run build -- --pretty false && node scripts/replay-incident-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nreplay incident smoke passed",
       "stderrPreview": ""
     },
@@ -534,7 +724,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5457,
+      "durationMs": 6262,
       "stdoutPreview": "> pandoshare-agent@0.1.0 replay:export-smoke\n> npm run build -- --pretty false && node scripts/replay-export-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nreplay export smoke passed",
       "stderrPreview": ""
     },
@@ -544,7 +734,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 5448,
+      "durationMs": 6084,
       "stdoutPreview": "> pandoshare-agent@0.1.0 replay:api-smoke\n> npm run build -- --pretty false && node scripts/replay-api-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nreplay api smoke passed",
       "stderrPreview": ""
     },
@@ -554,7 +744,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "durationMs": 6340,
+      "durationMs": 6814,
       "stdoutPreview": "> pandoshare-agent@0.1.0 replay:cli-smoke\n> npm run build -- --pretty false && node scripts/replay-cli-smoke.mjs\n\n\n> pandoshare-agent@0.1.0 build\n> npx --yes -p typescript@5.8.2 tsc --pretty false\n\nreplay cli smoke passed",
       "stderrPreview": ""
     }

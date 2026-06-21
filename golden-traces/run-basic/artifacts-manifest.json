@@ -1,0 +1,33 @@
+{
+  "artifacts": [
+    {
+      "artifactId": "artifact_1yx2x6l",
+      "kind": "tool_result_ref",
+      "ref": "artifact://golden/run-basic/tool-result",
+      "safeSummary": "tool_result_ref at $.resultRef",
+      "sourceEventId": "evt_run_basic_008"
+    },
+    {
+      "artifactId": "artifact_kdfsk1",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_run_basic_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_run_basic_009"
+    },
+    {
+      "artifactId": "artifact_1lq3cnn",
+      "kind": "checkpoint_ref",
+      "ref": "artifact://golden/run-basic/checkpoint",
+      "safeSummary": "checkpoint_ref at $.checkpointRef",
+      "sourceEventId": "evt_run_basic_009"
+    },
+    {
+      "artifactId": "artifact_1ex5nkv",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_run_basic_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_run_basic_010"
+    }
+  ],
+  "warnings": []
+}

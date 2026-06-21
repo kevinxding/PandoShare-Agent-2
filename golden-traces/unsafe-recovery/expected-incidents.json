@@ -1,0 +1,44 @@
+[
+  {
+    "eventIds": [
+      "evt_unsafe_recovery_002"
+    ],
+    "importantIds": {
+      "eventIds": [
+        "evt_unsafe_recovery_002"
+      ],
+      "loopIds": [
+        "loop_unsafe_recovery"
+      ],
+      "runIds": [
+        "run_unsafe_recovery"
+      ],
+      "threadIds": [
+        "thread_unsafe_recovery"
+      ]
+    },
+    "kind": "pending_external_effect",
+    "severity": "error"
+  },
+  {
+    "eventIds": [
+      "evt_unsafe_recovery_003"
+    ],
+    "importantIds": {
+      "eventIds": [
+        "evt_unsafe_recovery_003"
+      ],
+      "guiActionIds": [
+        "gui_unsafe_recovery"
+      ],
+      "loopIds": [
+        "loop_unsafe_recovery"
+      ],
+      "runIds": [
+        "run_unsafe_recovery"
+      ]
+    },
+    "kind": "unsafe_recovery_attempt",
+    "severity": "critical"
+  }
+]

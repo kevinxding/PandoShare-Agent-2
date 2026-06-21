@@ -1,0 +1,38 @@
+﻿{
+  "schemaVersion": 1,
+  "id": "mock-click",
+  "title": "Mock click target",
+  "description": "Runs a trusted mock click through GuiRuntime and verifies durable event and screenshot refs.",
+  "type": "click_target",
+  "mode": "mock",
+  "action": {
+    "action": "click",
+    "x": 16,
+    "y": 24,
+    "verify": true,
+    "approvalPolicy": "trusted",
+    "timeoutMs": 1000
+  },
+  "mock": {
+    "observationLatencyMs": 1,
+    "actionLatencyMs": 2,
+    "verificationLatencyMs": 1,
+    "verificationStatus": "passed",
+    "screenshotRefs": [
+      "mock://gui-real/mock-click/before.png",
+      "mock://gui-real/mock-click/action.png",
+      "mock://gui-real/mock-click/after.png",
+      "mock://gui-real/mock-click/verify.png"
+    ]
+  },
+  "expectations": {
+    "status": "passed",
+    "verificationStatus": "passed",
+    "stuckDetected": false,
+    "inputReleased": false,
+    "approvalRequired": false,
+    "actionExecuted": true,
+    "minEventCount": 5
+  },
+  "tags": ["click", "mock"]
+}

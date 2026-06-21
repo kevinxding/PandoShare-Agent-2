@@ -1,0 +1,22 @@
+[
+  {
+    "eventIds": [
+      "evt_dup_terminal_003",
+      "evt_dup_terminal_004"
+    ],
+    "importantIds": {
+      "eventIds": [
+        "evt_dup_terminal_003",
+        "evt_dup_terminal_004"
+      ],
+      "runIds": [
+        "run_dup_terminal"
+      ],
+      "threadIds": [
+        "thread_dup_terminal"
+      ]
+    },
+    "kind": "duplicate_terminal_event",
+    "severity": "critical"
+  }
+]

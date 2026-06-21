@@ -1,0 +1,26 @@
+{
+  "artifacts": [
+    {
+      "artifactId": "artifact_1u9kzb2",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_dup_terminal_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_dup_terminal_002"
+    },
+    {
+      "artifactId": "artifact_jl1ou4",
+      "kind": "checkpoint_ref",
+      "ref": "artifact://golden/duplicate-terminal/checkpoint",
+      "safeSummary": "checkpoint_ref at $.checkpointRef",
+      "sourceEventId": "evt_dup_terminal_002"
+    },
+    {
+      "artifactId": "artifact_62lfvf",
+      "kind": "checkpoint_ref",
+      "ref": "checkpoint_dup_terminal_1",
+      "safeSummary": "checkpoint_ref at $.checkpointId",
+      "sourceEventId": "evt_dup_terminal_003"
+    }
+  ],
+  "warnings": []
+}

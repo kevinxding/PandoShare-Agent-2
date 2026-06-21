@@ -1,0 +1,14 @@
+{
+  "edgeCount": 22,
+  "edgeTypes": {
+    "gateway_to_command": 1,
+    "gui_to_checkpoint": 2,
+    "same_run": 16,
+    "same_thread": 3
+  },
+  "leafCount": 6,
+  "nodeCount": 13,
+  "orphanCount": 0,
+  "rootCount": 6,
+  "warnings": []
+}
